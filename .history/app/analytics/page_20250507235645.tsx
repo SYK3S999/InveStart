@@ -63,6 +63,7 @@ const mockAnalyticsData = {
 type AnalyticsData = typeof mockAnalyticsData
 
 export default function AnalyticsPage() {
+  const { user } = useAuth()
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [timeRange, setTimeRange] = useState("year")
