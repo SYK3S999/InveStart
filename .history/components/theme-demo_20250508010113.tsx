@@ -105,10 +105,9 @@ export function ThemeDemo() {
           <div className="space-y-4">
             <h3 className="text-xl font-bold">عناصر متحركة</h3>
             <div className="space-y-4">
-            <AnimatedElement animation="fade" className="p-3 bg-primary/10 rounded-md">
-  ظهور تدريجي
-</AnimatedElement>
-
+              <AnimatedElement animation="fade" className="p-3 bg-primary/10 rounded-md">
+                ظهور تدريجي
+              </AnimatedElement>
               <AnimatedElement animation="slide" delay={200} className="p-3 bg-secondary/10 rounded-md">
                 انزلاق للأعلى
               </AnimatedElement>
