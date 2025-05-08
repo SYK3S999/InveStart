@@ -1,5 +1,3 @@
-'use client'
-
 import { FileText, Flag, Layers, TrendingUp, Users, Clock } from "lucide-react"
 
 interface User {

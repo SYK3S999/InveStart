@@ -1,5 +1,3 @@
-'use client'
-
 import Image from "next/image"
 import { Building, Cpu, Leaf, Users, Clock, MessageCircle, Heart, Share2 } from "lucide-react"
 import { calculateProgress } from "@/lib/utils"
