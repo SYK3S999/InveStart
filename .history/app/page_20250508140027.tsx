@@ -1,5 +1,4 @@
 "use client";
-import dynamic from 'next/dynamic';
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
@@ -12,13 +11,7 @@ import { initializeStorage } from "@/lib/storage";
 import { ArrowLeft, BarChart3, Briefcase, Lightbulb, Quote, Rocket, Search, User, Users } from "lucide-react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Player } from "@lottiefiles/react-lottie-player";
-import Lottie from 'react-lottie-player';
 
-
-const LottiePlayer = dynamic(
-  () => import('@lottiefiles/react-lottie-player').then((mod) => mod.Player),
-  { ssr: false }
-);
 export default function Home() {
   useEffect(() => {
     initializeStorage();
@@ -316,12 +309,12 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
               >
-                <LottiePlayer
-    autoplay
-    loop
-    src="/assets/money.json"
-    style={{ width: "100%", height: "100%" }}
-  />
+                <Player
+                  autoplay
+                  loop
+                  src="/assets/money.json" // Crowdfunding-themed animation
+                  style={{ width: "100%", height: "100%" }}
+                />
               </motion.div>
             </div>
           </motion.div>
