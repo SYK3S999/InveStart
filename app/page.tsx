@@ -63,7 +63,7 @@ export default function Home() {
 
   const statsData = [
     { 
-      value: "+١٠٠", 
+      value: "+100", 
       label: "مشروع ممول", 
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,7 +76,7 @@ export default function Home() {
       accentColor: "primary",
     },
     { 
-      value: "+٥٠٠", 
+      value: "+500", 
       label: "مستثمر نشط", 
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-4 text-secondary-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -90,7 +90,7 @@ export default function Home() {
       accentColor: "secondary",
     },
     { 
-      value: "+٢٠٠", 
+      value: "+200", 
       label: "صاحب فكرة", 
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-4 text-accent-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -103,7 +103,7 @@ export default function Home() {
       accentColor: "accent",
     },
     { 
-      value: "+١٠٠م", 
+      value: "+100م", 
       label: "دينار مستثمر", 
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mb-4 text-primary-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
