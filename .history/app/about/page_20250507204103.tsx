@@ -46,7 +46,7 @@ export default function AboutPage() {
             >
               <Image
                 src="/placeholder.svg?height=384&width=384"
-                alt="logo or photo de zaki et son binome"
+                alt="فريق العمل"
                 fill
                 className="object-cover rounded-lg shadow-lg"
               />

@@ -45,10 +45,10 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Image
-                src="/placeholder.svg?height=384&width=384"
-                alt="logo or photo de zaki et son binome"
-                fill
-                className="object-cover rounded-lg shadow-lg"
+              src="https://source.unsplash.com/random/384x384"
+              alt="فريق العمل"
+              fill
+              className="object-cover rounded-lg shadow-lg"
               />
             </motion.div>
           </div>

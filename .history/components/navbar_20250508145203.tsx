@@ -84,7 +84,7 @@ export function Navbar() {
     { href: "/about", label: "من نحن", icon: null },
     { href: "/contact", label: "تواصل معنا", icon: null },
 
-    // { href: "/terms", label: "الشروط والأحكام", icon: null },
+    { href: "/terms", label: "الشروط والأحكام", icon: null },
     { href: "/security", label: "سياسة الخصوصية", icon: null },
   ];
 
@@ -296,7 +296,7 @@ export function Navbar() {
                 size="default"
                 className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-full px-6 py-2 shadow-md hover:shadow-lg transition-all duration-300"
               >
-                <Link href="/register">قدّم مشروعك الآن</Link>
+                <Link href="/submit">قدّم مشروعك الآن</Link>
               </Button>
             </div>
           )}

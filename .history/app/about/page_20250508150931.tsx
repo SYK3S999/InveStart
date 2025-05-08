@@ -21,7 +21,7 @@ export default function AboutPage() {
             عن منصتنا
           </motion.h1>
 
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -29,13 +29,13 @@ export default function AboutPage() {
             >
               <h2 className="text-2xl md:text-3xl font-bold text-primary-600 mb-4">مهمتنا</h2>
               <p className="text-gray-600 mb-6">
-                نسعى لتمكين رواد الأعمال والمستثمرين في الجزائر من خلال منصة تمويل جماعي آمنة وشفافة، تدعم النمو
-                الاقتصادي وتعزز الابتكار في مختلف القطاعات.
+              نسعى لتمكين رواد الأعمال والمستثمرين في الجزائر من خلال منصة تمويل جماعي آمنة وشفافة، تدعم النمو
+              الاقتصادي وتعزز الابتكار في مختلف القطاعات.
               </p>
               <h2 className="text-2xl md:text-3xl font-bold text-primary-600 mb-4">رؤيتنا</h2>
               <p className="text-gray-600">
-                نطمح لأن نكون المنصة الرائدة في الجزائر والمنطقة، التي تجمع بين أصحاب الأفكار الإبداعية والمستثمرين
-                الطموحين، لخلق فرص استثمارية مجزية وتحقيق تنمية مستدامة.
+              نطمح لأن نكون المنصة الرائدة في الجزائر والمنطقة، التي تجمع بين أصحاب الأفكار الإبداعية والمستثمرين
+              الطموحين، لخلق فرص استثمارية مجزية وتحقيق تنمية مستدامة.
               </p>
             </motion.div>
             <motion.div
@@ -45,13 +45,13 @@ export default function AboutPage() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               <Image
-                src="/placeholder.svg?height=384&width=384"
-                alt="logo or photo de zaki et son binome"
-                fill
-                className="object-cover rounded-lg shadow-lg"
+              src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=384&q=80"
+              alt="فريق العمل"
+              fill
+              className="object-cover rounded-lg shadow-lg"
               />
             </motion.div>
-          </div>
+            </div>
 
           <motion.div
             className="text-center mb-16"
