@@ -100,7 +100,6 @@ module.exports = {
 		fontFamily: {
 			sans: ["Cairo", "sans-serif"],
 			amiri: ["var(--font-amiri)"],
-			tajawal: ['Tajawal', 'sans-serif'],
 		  },
 		boxShadow: {
 		  sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",

@@ -11,7 +11,7 @@ import { Edit, Plus, Eye, BarChart3, MessageSquare } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { calculateProgress } from "@/lib/utils"
-import { getProjects, Project } from "@/lib/storage"
+import { getProjects, formatCurrency, Project } from "@/lib/storage"
 import ProtectedRoute from "@/components/protected-route"
 
 export default function MyProjectsPage() {
@@ -33,13 +33,10 @@ export default function MyProjectsPage() {
       (statusFilter === "all" || getProjectStatus(project) === statusFilter),
   )
 
-  const getProjectStatus = (project: Project) => {
-    const progress = calculateProgress(
-      project.raised.equipment ? project.raised.equipment.quantity : 0,
-      project.goal.equipment ? project.goal.equipment.quantity : 0
-    )
+  const getProjectStatus = (project: { id?: number; title?: string; description?: string; category?: string; goal: any; raised: any; documents?: { name: string; status: "قيد التحقق" | "تمت المصادقة" | "مرفوض" }[]; updates?: { id: number; date: string; content: string }[]; messages?: { id: number; sender: string; content: string; date: string }[]; images?: string[] }) => {
+    const progress = calculateProgress(project.raised.cash, project.goal.cash)
     if (progress >= 100) return "مكتمل"
-    if (progress > 0) return "جاري التزويد"
+    if (progress > 0) return "جاري التمويل"
     return "جديد"
   }
 
@@ -47,7 +44,7 @@ export default function MyProjectsPage() {
     switch (status) {
       case "مكتمل":
         return "bg-green-100 text-green-800 border-green-200"
-      case "جاري التزويد":
+      case "جاري التمويل":
         return "bg-blue-100 text-blue-800 border-blue-200"
       case "جديد":
         return "bg-amber-100 text-amber-800 border-amber-200"
@@ -87,7 +84,7 @@ export default function MyProjectsPage() {
               >
                 <option value="all">جميع الحالات</option>
                 <option value="جديد">جديد</option>
-                <option value="جاري التزويد">جاري التزويد</option>
+                <option value="جاري التمويل">جاري التمويل</option>
                 <option value="مكتمل">مكتمل</option>
               </select>
               <Button asChild className="md:mr-auto">
@@ -102,9 +99,7 @@ export default function MyProjectsPage() {
             {filteredProjects.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProjects.map((project) => {
-                  const progress = calculateProgress(project.raised.equipment ? project.raised.equipment.quantity : 0,
-                project.goal.equipment ? project.goal.equipment.quantity : 0
-              )
+                  const progress = calculateProgress(project.raised.cash, project.goal.cash)
                   const status = getProjectStatus(project)
 
                   return (
@@ -124,7 +119,7 @@ export default function MyProjectsPage() {
                         />
                         <div className="absolute top-2 right-2">
                           <span className={`px-3 py-1 rounded-full text-sm border ${getStatusClass(status)}`}>
-                            {status}{project.blockchainVerified ? " (موثق)" : ""}
+                            {status}
                           </span>
                         </div>
                       </div>
@@ -132,12 +127,8 @@ export default function MyProjectsPage() {
                         <h3 className="text-lg font-bold text-primary-500 mb-2">{project.title}</h3>
                         <div className="mb-3">
                           <div className="flex justify-between text-sm text-gray-600 mb-1">
-                            <span>
-                              {project.raised.equipment ? `${project.raised.equipment.quantity} وحدة ${project.raised.equipment.type}` : "0 وحدة"}
-                            </span>
-                            <span>
-                              {project.goal.equipment ? `${project.goal.equipment.quantity} وحدة ${project.goal.equipment.type}` : "غير محدد"}
-                            </span>
+                            <span>{formatCurrency(project.raised.cash)}</span>
+                            <span>{formatCurrency(project.goal.cash)}</span>
                           </div>
                           <div className="w-full bg-primary-200 rounded-full h-2">
                             <div className="bg-primary-400 h-2 rounded-full" style={{ width: `${progress}%` }}></div>

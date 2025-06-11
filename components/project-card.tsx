@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image"
-import { Building, Cpu, Leaf, Users, Clock, MessageCircle, Heart, Share2 } from "lucide-react"
+import { Building, Cpu, Leaf, Users, Clock, MessageCircle, Heart, Share2, Lock } from "lucide-react"
 import { calculateProgress } from "@/lib/utils"
 import type { Project } from "@/lib/storage"
 import { Badge } from "@/components/ui/badge"
@@ -15,7 +15,10 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, featured = false }: ProjectCardProps) {
-  const progress = calculateProgress(project.raised.cash, project.goal.cash)
+  const progress = calculateProgress(
+    project.raised.equipment ? project.raised.equipment.quantity : 0,
+    project.goal.equipment ? project.goal.equipment.quantity : 0
+  )
   
   // Enhanced progress color with smoother gradient
   const getProgressColor = () => {
@@ -96,6 +99,14 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
               مشروع مميز
             </Badge>
           )}
+          
+          {/* Blockchain badge */}
+          {project.blockchainVerified && (
+            <Badge className="bg-green-100/80 text-green-800 border-green-200 backdrop-blur-md py-1 px-3">
+              <Lock className="h-3.5 w-3.5 ml-1" />
+              موثق بالبلوكشين
+            </Badge>
+          )}
         </div>
         
         {/* Bottom info bar, always visible but more pronounced on hover */}
@@ -138,12 +149,16 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
         <div className="pt-1">
           <div className="flex justify-between text-sm mb-2.5">
             <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">تم جمع</span>
-              <span className="font-bold text-gray-800">{new Intl.NumberFormat("ar-DZ").format(project.raised.cash)} دج</span>
+              <span className="text-xs text-muted-foreground">تم تزويد</span>
+              <span className="font-bold text-gray-800">
+                {project.raised.equipment ? `${project.raised.equipment.quantity} وحدة ${project.raised.equipment.type}` : "0 وحدة"}
+              </span>
             </div>
             <div className="flex flex-col items-end">
               <span className="text-xs text-muted-foreground">الهدف</span>
-              <span className="font-medium text-gray-600">{new Intl.NumberFormat("ar-DZ").format(project.goal.cash)} دج</span>
+              <span className="font-medium text-gray-600">
+                {project.goal.equipment ? `${project.goal.equipment.quantity} وحدة ${project.goal.equipment.type}` : "غير محدد"}
+              </span>
             </div>
           </div>
           
@@ -159,7 +174,7 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
           
           <div className="mt-2.5 text-center">
             <span className="inline-block px-4 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-gray-700 shadow-sm">
-              تم تحقيق <span className="text-primary font-bold">{progress}%</span> من الهدف
+              تم تزويد <span className="text-primary font-bold">{progress}%</span> من المعدات
             </span>
           </div>
         </div>

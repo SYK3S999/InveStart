@@ -192,7 +192,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  منصة تمويل جماعي متطورة تربط رواد الأعمال بالمستثمرين في الجزائر، مع دعم عيني (معدات، أراضي) بنظام الاعتماد المستندي.
+                  منصة تمويل جماعي متطورة تربط رواد الأعمال بالمستثمرين في الجزائر، مع دعم نقدي وعيني (معدات، أراضي) بنظام الاعتماد المستندي.
                 </motion.p>
                 <motion.ul
                   className="space-y-4 mb-10 text-slate-700"
@@ -564,7 +564,7 @@ export default function Home() {
                     autoplay
                     loop
                     src="/assets/security.json"
-                    style={{ width: "80%", height: "80%" }}
+                    style={{ width: "90%", height: "90%" }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary-600/40 to-transparent" />
                   <motion.div

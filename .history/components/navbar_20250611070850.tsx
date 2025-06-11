@@ -228,10 +228,10 @@ export function Navbar() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="/messages"
-                    className={`relative p-2.5 rounded-full transition-all duration-300 ${
+                    className={`relative p-2.5 rounded-full transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-primary/10 hover:border-primary/20 hover:bg-white/80 dark:hover:bg-gray-800/80 ${
                       pathname === "/messages"
-                        ? "bg-primary-100 text-primary-700 shadow-md"
-                        : "text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-gray-800"
+                        ? "bg-primary-100 text-primary-700 shadow-md border-primary/30"
+                        : "text-primary-600 dark:text-primary-400"
                     }`}
                   >
                     <MessageSquare className="h-5 w-5" />
@@ -239,7 +239,7 @@ export function Navbar() {
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
+                        className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white dark:border-gray-900"
                       >
                         {unreadMessages}
                       </motion.div>
@@ -249,10 +249,10 @@ export function Navbar() {
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Link
                     href="/notifications"
-                    className={`relative p-2.5 rounded-full transition-all duration-300 ${
+                    className={`relative p-2.5 rounded-full transition-all duration-300 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border border-primary/10 hover:border-primary/20 hover:bg-white/80 dark:hover:bg-gray-800/80 ${
                       pathname === "/notifications"
-                        ? "bg-primary-100 text-primary-700 shadow-md"
-                        : "text-primary-600 hover:bg-primary-50 dark:text-primary-400 dark:hover:bg-gray-800"
+                        ? "bg-primary-100 text-primary-700 shadow-md border-primary/30"
+                        : "text-primary-600 dark:text-primary-400"
                     }`}
                   >
                     <Bell className="h-5 w-5" />
@@ -260,7 +260,7 @@ export function Navbar() {
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg"
+                        className="absolute -top-0.5 -right-0.5 min-w-[20px] h-5 px-1 bg-gradient-to-r from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white dark:border-gray-900"
                       >
                         {unreadNotifications}
                       </motion.div>

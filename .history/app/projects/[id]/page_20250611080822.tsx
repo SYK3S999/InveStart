@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -34,36 +33,21 @@ import {
   Briefcase,
   Lock,
   Truck,
-  Edit,
-  Check,
-  X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 
-// Extended Project type with offers
-interface ExtendedProject extends Project {
-  offers?: {
-    id: string;
-    sponsorId: string;
-    equipment: { type: string; quantity: number; condition: string };
-    date: string;
-    status: "pending" | "accepted" | "rejected";
-    transactionHash?: string;
-  }[];
-}
-
-// Simulated RBAC logic
+// Simulated RBAC logic for Sponsor role
 const useAuth = () => {
-  const user = { role: "startup", id: "user123" }; // Toggle role: "sponsor" or "startup"
-  return { isAuthenticated: !!user, role: user?.role || null, userId: user?.id || null };
+  const user = { role: "sponsor", id: "user123" }; // Hardcoded for demo
+  return { isAuthenticated: !!user, role: user?.role || null };
 };
 
 export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
-  const { isAuthenticated, role, userId } = useAuth();
-  const [project, setProject] = useState<ExtendedProject | null>(null);
+  const { isAuthenticated, role } = useAuth();
+  const [project, setProject] = useState<Project | null>(null);
   const [activeTab, setActiveTab] = useState<"details" | "documents" | "updates" | "messages">("details");
   const [message, setMessage] = useState("");
   const [equipmentOffer, setEquipmentOffer] = useState({ type: "", quantity: "", condition: "" });
@@ -78,18 +62,8 @@ export default function ProjectDetailsPage() {
     initializeStorage();
     if (params.id) {
       const projectId = Number(params.id);
-      const projectData = getProject(projectId) as ExtendedProject;
+      const projectData = getProject(projectId);
       if (projectData) {
-        // Mock offers for demo
-        projectData.offers = projectData.offers || [
-          {
-            id: "offer1",
-            sponsorId: "sponsor456",
-            equipment: { type: "ماكينة تعبئة", quantity: 2, condition: "جديد" },
-            date: new Date().toISOString(),
-            status: "pending",
-          },
-        ];
         setProject(projectData);
       } else {
         router.push("/projects");
@@ -98,9 +72,9 @@ export default function ProjectDetailsPage() {
     setLoading(false);
   }, [params.id, router]);
 
-  // RBAC: Redirect if not authenticated or invalid role
+  // RBAC: Redirect if not Sponsor
   useEffect(() => {
-    if (!isAuthenticated || !["sponsor", "startup"].includes(role || "")) {
+    if (!isAuthenticated || role !== "sponsor") {
       router.push("/login");
     }
   }, [isAuthenticated, role, router]);
@@ -110,8 +84,7 @@ export default function ProjectDetailsPage() {
       setError("يرجى إدخال رسالة صالحة");
       return;
     }
-    const sender = role === "sponsor" ? "راعي المواد" : "صاحب المشروع";
-    const newMessage = addMessage(project.id, { sender, content: message });
+    const newMessage = addMessage(project.id, { sender: "راعي المواد", content: message });
     if (newMessage) {
       setProject({ ...project, messages: [...project.messages, newMessage] });
       setMessage("");
@@ -132,23 +105,18 @@ export default function ProjectDetailsPage() {
       return;
     }
     const offer = {
-      id: `offer${Date.now()}`,
-      sponsorId: userId || "sponsor456",
+      projectId: project.id,
+      sponsor: "راعي المواد",
       equipment: {
         type: equipmentOffer.type,
         quantity,
         condition: equipmentOffer.condition,
       },
       date: new Date().toISOString(),
-      status: "pending" as const,
     };
     // Simulate Blockchain transaction
     const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
     console.log("Offer saved:", offer, "Blockchain Tx Hash:", mockTxHash);
-    setProject({
-      ...project,
-      offers: [...(project.offers || []), { ...offer, transactionHash: mockTxHash }],
-    });
     setTransactionHash(mockTxHash);
     setOfferSubmitted(true);
     setEquipmentOffer({ type: "", quantity: "", condition: "" });
@@ -163,35 +131,6 @@ export default function ProjectDetailsPage() {
     setTransactionHash(mockTxHash);
     setDeliveryConfirmed(true);
     alert("تم تأكيد تسليم المعدات! تم تسجيل العملية على البلوكشين.");
-  };
-
-  const handleAcceptOffer = (offerId: string) => {
-    if (!project) return;
-    const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
-    setProject({
-      ...project,
-      offers: project.offers?.map((offer) =>
-        offer.id === offerId ? { ...offer, status: "accepted", transactionHash: mockTxHash } : offer
-      ),
-      raised: {
-        equipment: project.offers?.find((offer) => offer.id === offerId)?.equipment || null,
-      },
-    });
-    console.log("Offer accepted:", offerId, "Blockchain Tx Hash:", mockTxHash);
-    alert("تم قبول العرض! تم تسجيل العملية على البلوكشين.");
-  };
-
-  const handleRejectOffer = (offerId: string) => {
-    if (!project) return;
-    const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
-    setProject({
-      ...project,
-      offers: project.offers?.map((offer) =>
-        offer.id === offerId ? { ...offer, status: "rejected", transactionHash: mockTxHash } : offer
-      ),
-    });
-    console.log("Offer rejected:", offerId, "Blockchain Tx Hash:", mockTxHash);
-    alert("تم رفض العرض! تم تسجيل العملية على البلوكشين.");
   };
 
   const nextImage = () => {
@@ -224,15 +163,6 @@ export default function ProjectDetailsPage() {
     }
   };
 
-  const getOfferStatusClass = (status: string) => {
-    switch (status) {
-      case "accepted": return "bg-green-100 text-green-800";
-      case "rejected": return "bg-red-100 text-red-800";
-      case "pending": return "bg-amber-100 text-amber-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
-
   const tabVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
@@ -253,8 +183,8 @@ export default function ProjectDetailsPage() {
     );
   }
 
-  if (!project || !isAuthenticated || !["sponsor", "startup"].includes(role || "")) {
-    return null;
+  if (!project || !isAuthenticated || role !== "sponsor") {
+    return null; // Render nothing while redirecting
   }
 
   const progress = calculateProgress(project.raised.equipment, project.goal.equipment);
@@ -504,11 +434,9 @@ export default function ProjectDetailsPage() {
                               <motion.div
                                 key={msg.id}
                                 className={`p-3 rounded-lg max-w-[80%] ${
-                                  msg.sender === (role === "sponsor" ? "راعي المواد" : "صاحب المشروع")
-                                    ? "bg-primary-100 mr-auto"
-                                    : "bg-white ml-auto border border-primary-200"
+                                  msg.sender === "راعي المواد" ? "bg-primary-100 mr-auto" : "bg-white ml-auto border border-primary-200"
                                 }`}
-                                initial={{ opacity: 0, x: msg.sender === (role === "sponsor" ? "راعي المواد" : "صاحب المشروع") ? -20 : 20 }}
+                                initial={{ opacity: 0, x: msg.sender === "راعي المواد" ? -20 : 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.3 }}
                               >
@@ -533,7 +461,7 @@ export default function ProjectDetailsPage() {
                         <Input
                           type="text"
                           placeholder="اكتب رسالتك هنا..."
-                          className="flex-1 border border-primary-200 rounded-lg px-4 py-2 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-primary-400"
+                          className="flex-1 border border-primary-200 rounded-lg px-4 py-3 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
@@ -541,7 +469,7 @@ export default function ProjectDetailsPage() {
                         />
                         <Button
                           onClick={handleSendMessage}
-                          className="bg-primary-500 text-white rounded-full px-6 py-2 hover:bg-primary-600 shadow-md transition-all duration-300"
+                          className="bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
                           aria-label="إرسال الرسالة"
                         >
                           <Send className="h-4 w-4" />
@@ -553,7 +481,7 @@ export default function ProjectDetailsPage() {
                 </motion.div>
               </div>
 
-              {/* Right Column - Role-Based Content */}
+              {/* Right Column - Offer Form */}
               <div className="md:w-1/3 bg-primary-50 p-6 md:p-8 border-t md:border-t-0 md:border-r border-primary-200">
                 {/* Equipment Needs */}
                 <div className="mb-6 p-4 bg-white rounded-lg border border-primary-200 shadow-md">
@@ -573,149 +501,79 @@ export default function ProjectDetailsPage() {
                   </p>
                 </div>
 
-                {/* Role-Based Content */}
-                {role === "sponsor" && (
-                  <>
-                    {!offerSubmitted ? (
-                      <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
-                        <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">تقديم عرض معدات</h3>
-                        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-                        <div className="mb-4">
-                          <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">نوع المعدات</label>
-                          <Input
-                            type="text"
-                            placeholder="مثال: ماكينة تعبئة"
-                            className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                            value={equipmentOffer.type}
-                            onChange={(e) => setEquipmentOffer({ ...equipmentOffer, type: e.target.value })}
-                            aria-label="نوع المعدات"
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">الكمية</label>
-                          <Input
-                            type="number"
-                            placeholder="مثال: 2"
-                            className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                            value={equipmentOffer.quantity}
-                            onChange={(e) => setEquipmentOffer({ ...equipmentOffer, quantity: e.target.value })}
-                            min="1"
-                            aria-label="كمية المعدات"
-                          />
-                        </div>
-                        <div className="mb-4">
-                          <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">الحالة</label>
-                          <select
-                            className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                            value={equipmentOffer.condition}
-                            onChange={(e) => setEquipmentOffer({ ...equipmentOffer, condition: e.target.value })}
-                            aria-label="حالة المعدات"
-                          >
-                            <option value="">اختر الحالة</option>
-                            <option value="جديد">جديد</option>
-                            <option value="مستعمل بحالة جيدة">مستعمل بحالة جيدة</option>
-                          </select>
-                        </div>
-                        <Button
-                          className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
-                          onClick={handleSubmitOffer}
-                          disabled={!equipmentOffer.type.trim() || !equipmentOffer.quantity || !equipmentOffer.condition.trim()}
-                        >
-                          إرسال العرض
-                        </Button>
-                      </div>
-                    ) : (
-                      <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
-                        <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">تأكيد تسليم المعدات</h3>
-                        <p className="text-gray-600 text-sm md:text-base mb-4">
-                          تم تقديم العرض بنجاح! يرجى تأكيد تسليم المعدات إلى صاحب المشروع.
-                        </p>
-                        {transactionHash && (
-                          <p className="text-gray-600 text-sm mb-4 break-all">
-                            رمز العملية على البلوكشين: <span className="font-mono text-primary-500">{transactionHash}</span>
-                          </p>
-                        )}
-                        <Button
-                          className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
-                          onClick={handleConfirmDelivery}
-                          disabled={deliveryConfirmed}
-                        >
-                          <Truck className="h-4 w-4" />
-                          {deliveryConfirmed ? "تم التسليم" : "تأكيد التسليم"}
-                        </Button>
-                      </div>
-                    )}
-                  </>
-                )}
-
-                {role === "startup" && (
-                  <>
-                    <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
-                      <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">إدارة العروض</h3>
-                      {project.offers && project.offers.length > 0 ? (
-                        <ul className="space-y-3">
-                          {project.offers.map((offer) => (
-                            <li
-                              key={offer.id}
-                              className="p-3 bg-primary-50 rounded-lg border border-primary-200"
-                            >
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="text-gray-600 text-sm">
-                                  {offer.equipment.quantity} وحدة {offer.equipment.type} ({offer.equipment.condition})
-                                </span>
-                                <span className={`px-2 py-1 rounded-full text-xs ${getOfferStatusClass(offer.status)}`}>
-                                  {offer.status === "accepted" ? "مقبول" : offer.status === "rejected" ? "مرفوض" : "قيد الانتظار"}
-                                </span>
-                              </div>
-                              <p className="text-gray-600 text-xs mb-2">التاريخ: {formatDate(offer.date)}</p>
-                              {offer.transactionHash && (
-                                <p className="text-gray-600 text-xs mb-2 break-all">
-                                  رمز العملية: <span className="font-mono text-primary-500">{offer.transactionHash}</span>
-                                </p>
-                              )}
-                              {offer.status === "pending" && (
-                                <div className="flex gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex items-center gap-1"
-                                    onClick={() => handleAcceptOffer(offer.id)}
-                                  >
-                                    <Check className="h-4 w-4" />
-                                    قبول
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex items-center gap-1"
-                                    onClick={() => handleRejectOffer(offer.id)}
-                                  >
-                                    <X className="h-4 w-4" />
-                                    رفض
-                                  </Button>
-                                </div>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-gray-600 text-center">لا توجد عروض بعد</p>
-                      )}
+                {/* Offer Form */}
+                {!offerSubmitted ? (
+                  <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
+                    <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">تقديم عرض معدات</h3>
+                    {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                    <div className="mb-4">
+                      <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">نوع المعدات</label>
+                      <Input
+                        type="text"
+                        placeholder="مثال: ماكينة تعبئة"
+                        className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        value={equipmentOffer.type}
+                        onChange={(e) => setEquipmentOffer({ ...equipmentOffer, type: e.target.value })}
+                        aria-label="نوع المعدات"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">الكمية</label>
+                      <Input
+                        type="number"
+                        placeholder="مثال: 2"
+                        className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        value={equipmentOffer.quantity}
+                        onChange={(e) => setEquipmentOffer({ ...equipmentOffer, quantity: e.target.value })}
+                        min="1"
+                        aria-label="كمية المعدات"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block text-sm md:text-base font-medium text-primary-600 mb-1">الحالة</label>
+                      <select
+                        className="w-full border border-primary-200 rounded-lg px-4 py-2 bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                        value={equipmentOffer.condition}
+                        onChange={(e) => setEquipmentOffer({ ...equipmentOffer, condition: e.target.value })}
+                        aria-label="حالة المعدات"
+                      >
+                        <option value="">اختر الحالة</option>
+                        <option value="جديد">جديد</option>
+                        <option value="مستعمل بحالة جيدة">مستعمل بحالة جيدة</option>
+                      </select>
                     </div>
                     <Button
-                      asChild
-                      className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
+                      className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
+                      onClick={handleSubmitOffer}
+                      disabled={!equipmentOffer.type.trim() || !equipmentOffer.quantity || !equipmentOffer.condition.trim()}
                     >
-                      <Link href={`/projects/edit/${project.id}`}>
-                        <Edit className="h-4 w-4" />
-                        تعديل المشروع
-                      </Link>
+                      إرسال العرض
                     </Button>
-                  </>
+                  </div>
+                ) : (
+                  <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
+                    <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">تأكيد تسليم المعدات</h3>
+                    <p className="text-gray-600 text-sm md:text-base mb-4">
+                      تم تقديم العرض بنجاح! يرجى تأكيد تسليم المعدات إلى صاحب المشروع.
+                    </p>
+                    {transactionHash && (
+                      <p className="text-gray-600 text-sm mb-4 break-all">
+                        رمز العملية على البلوكشين: <span className="font-mono text-primary-500">{transactionHash}</span>
+                      </p>
+                    )}
+                    <Button
+                      className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
+                      onClick={handleConfirmDelivery}
+                      disabled={deliveryConfirmed}
+                    >
+                      <Truck className="h-4 w-4" />
+                      {deliveryConfirmed ? "تم التسليم" : "تأكيد التسليم"}
+                    </Button>
+                  </div>
                 )}
 
                 {/* Project Stats */}
-                <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mt-6">
+                <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md">
                   <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">معلومات المشروع</h3>
                   <ul className="space-y-3">
                     <li className="flex justify-between items-center pb-2 border-b border-primary-200">

@@ -6,38 +6,20 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProjectCard } from "@/components/project-card";
 import { getProjects, initializeStorage, type Project } from "@/lib/storage";
-import { Search, Filter, ChevronDown, ChevronUp, Link, Lock } from "lucide-react";
+import { Search, Filter, ChevronDown, ChevronUp, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-
-// Hardcoded RBAC logic for Fournisseur role
-const useAuth = () => {
-  // Simulated user data (replace with your auth logic)
-  const user = { role: "fournisseur", id: "user123" }; // Hardcoded for demo
-  return { isAuthenticated: !!user, role: user?.role || null };
-};
 
 export default function ProjectsPage() {
-  const router = useRouter();
-  const { isAuthenticated, role } = useAuth();
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [wilayaFilter, setWilayaFilter] = useState<string>("");
-  const [sectorFilter, setSectorFilter] = useState<string>("");
-  const [equipmentFilter, setEquipmentFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [fundingTypeFilter, setFundingTypeFilter] = useState<string>("");
   const [sortOption, setSortOption] = useState<string>("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const projectsPerPage = 6;
-
-  // RBAC: Redirect if not Fournisseur
-  useEffect(() => {
-    if (!isAuthenticated || role !== "fournisseur") {
-      router.push("/login");
-    }
-  }, [isAuthenticated, role, router]);
 
   useEffect(() => {
     initializeStorage();
@@ -51,26 +33,19 @@ export default function ProjectsPage() {
 
     // Apply search filter
     if (searchTerm) {
-      result = result.filter(
-        (project) =>
-          project.title.includes(searchTerm) ||
-          project.description.includes(searchTerm)
-      );
+      result = result.filter((project) => project.title.includes(searchTerm) || project.description.includes(searchTerm));
     }
 
-    // Apply Wilaya filter
-    if (wilayaFilter) {
-      result = result.filter((project) => project.wilaya === wilayaFilter);
+    // Apply category filter
+    if (categoryFilter) {
+      result = result.filter((project) => project.category === categoryFilter);
     }
 
-    // Apply sector filter
-    if (sectorFilter) {
-      result = result.filter((project) => project.sector === sectorFilter);
-    }
-
-    // Apply equipment type filter
-    if (equipmentFilter) {
-      result = result.filter((project) => project.equipmentType === equipmentFilter);
+    // Apply funding type filter
+    if (fundingTypeFilter === "نقدي") {
+      result = result.filter((project) => project.goal.cash > 0);
+    } else if (fundingTypeFilter === "عيني") {
+      result = result.filter((project) => project.goal.inKind !== null);
     }
 
     // Apply sorting
@@ -81,18 +56,23 @@ export default function ProjectsPage() {
       case "oldest":
         result.sort((a, b) => (a.updates[0]?.date || "").localeCompare(b.updates[0]?.date || ""));
         break;
+      case "funding-asc":
+        result.sort((a, b) => a.raised.cash - b.raised.cash);
+        break;
+      case "funding-desc":
+        result.sort((a, b) => b.raised.cash - a.raised.cash);
+        break;
       default:
         break;
     }
 
     setFilteredProjects(result);
-  }, [searchTerm, wilayaFilter, sectorFilter, equipmentFilter, sortOption, projects]);
+  }, [searchTerm, categoryFilter, fundingTypeFilter, sortOption, projects]);
 
   const resetFilters = () => {
     setSearchTerm("");
-    setWilayaFilter("");
-    setSectorFilter("");
-    setEquipmentFilter("");
+    setCategoryFilter("");
+    setFundingTypeFilter("");
     setSortOption("newest");
     setCurrentPage(1);
   };
@@ -110,27 +90,6 @@ export default function ProjectsPage() {
   };
 
   const featuredProject = filteredProjects.length > 0 ? filteredProjects[0] : null;
-
-  // Simulated Wilayas (Algerian provinces)
-  const wilayas = [
-    "",
-    "الجزائر",
-    "وهران",
-    "قسنطينة",
-    "عنابة",
-    "باتنة",
-    "سطيف",
-    "سيدي بلعباس",
-    "تلمسان",
-  ];
-
-  // Simulated sectors and equipment types
-  const sectors = ["", "صناعة", "تكنولوجيا", "زراعة", "خدمات"];
-  const equipmentTypes = ["", "عتاد", "مواد", "معدات تأجيرية"];
-
-  if (!isAuthenticated || role !== "fournisseur") {
-    return null; // Render nothing while redirecting
-  }
 
   return (
     <div className="flex flex-col min-h-screen font-amiri bg-gradient-to-b from-white to-cream text-primary-900">
@@ -152,11 +111,11 @@ export default function ProjectsPage() {
           >
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-500 mb-4">استكشف المشاريع</h1>
             <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
-              تصفح مشاريع مبتكرة وابحث عن فرص لتقديم دعم عيني أو تأجيري في الجزائر
+              تصفح مجموعة متنوعة من المشاريع المبتكرة واكتشف فرص الاستثمار المناسبة لك
             </p>
           </motion.div>
 
-          {/* Featured Project Banner with Blockchain Indicator */}
+          {/* Featured Project Banner */}
           {featuredProject && (
             <motion.div
               className="bg-primary-50 rounded-xl shadow-lg p-6 md:p-8 mb-8 md:mb-12 border border-primary-100/50 flex flex-col md:flex-row items-center gap-6"
@@ -171,10 +130,6 @@ export default function ProjectsPage() {
                   fill
                   className="object-cover rounded-lg"
                 />
-                <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
-                  <Lock className="h-4 w-4" />
-                  مؤمّن عبر البلوكشين
-                </div>
               </div>
               <div className="w-full md:w-1/2 text-center md:text-right">
                 <h2 className="text-xl md:text-2xl font-bold text-primary-500 mb-2">{featuredProject.title}</h2>
@@ -183,31 +138,31 @@ export default function ProjectsPage() {
                   asChild
                   className="bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
                 >
-                  <Link href={`/projects/${featuredProject.id}`}>تقديم عرض عيني</Link>
+                  <Link href={`/projects/${featuredProject.id}`}>اكتشف المزيد</Link>
                 </Button>
               </div>
             </motion.div>
           )}
 
-          {/* Sector Quick Filter */}
+          {/* Categories Quick Filter */}
           <motion.div
             className="flex flex-wrap justify-center gap-3 mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            {sectors.map((sector) => (
+            {["", "صناعة", "تكنولوجيا", "زراعة", "خدمات"].map((cat) => (
               <Button
-                key={sector}
-                variant={sectorFilter === sector ? "default" : "outline"}
+                key={cat}
+                variant={categoryFilter === cat ? "default" : "outline"}
                 className={`rounded-full px-4 py-2 text-sm md:text-base ${
-                  sectorFilter === sector
+                  categoryFilter === cat
                     ? "bg-primary-500 text-white hover:bg-primary-600"
                     : "border-primary-500 text-primary-500 hover:bg-primary-50"
                 } transition-all duration-300`}
-                onClick={() => setSectorFilter(sector)}
+                onClick={() => setCategoryFilter(cat)}
               >
-                {sector || "الكل"}
+                {cat || "الكل"}
               </Button>
             ))}
           </motion.div>
@@ -254,39 +209,42 @@ export default function ProjectsPage() {
                 animate="visible"
               >
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">الولاية</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">الفئة</label>
                   <select
                     className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
-                    value={wilayaFilter}
-                    onChange={(e) => setWilayaFilter(e.target.value)}
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
                   >
-                    {wilayas.map((wilaya) => (
-                      <option key={wilaya} value={wilaya}>{wilaya || "جميع الولايات"}</option>
-                    ))}
+                    <option value="">جميع الفئات</option>
+                    <option value="صناعة">صناعة</option>
+                    <option value="تكنولوجيا">تكنولوجيا</option>
+                    <option value="زراعة">زراعة</option>
+                    <option value="خدمات">خدمات</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">القطاع</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">نوع التمويل</label>
                   <select
                     className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
-                    value={sectorFilter}
-                    onChange={(e) => setSectorFilter(e.target.value)}
+                    value={fundingTypeFilter}
+                    onChange={(e) => setFundingTypeFilter(e.target.value)}
                   >
-                    {sectors.map((sector) => (
-                      <option key={sector} value={sector}>{sector || "جميع القطاعات"}</option>
-                    ))}
+                    <option value="">جميع أنواع التمويل</option>
+                    <option value="نقدي">نقدي</option>
+                    <option value="عيني">عيني</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">نوع العتاد</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">ترتيب حسب</label>
                   <select
                     className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
-                    value={equipmentFilter}
-                    onChange={(e) => setEquipmentFilter(e.target.value)}
+                    value={sortOption}
+                    onChange={(e) => setSortOption(e.target.value)}
                   >
-                    {equipmentTypes.map((type) => (
-                      <option key={type} value={type}>{type || "جميع الأنواع"}</option>
-                    ))}
+                    <option value="newest">الأحدث</option>
+                    <option value="oldest">الأقدم</option>
+                    <option value="funding-desc">التمويل (تنازلي)</option>
+                    <option value="funding-asc">التمويل (تصاعدي)</option>
                   </select>
                 </div>
               </motion.div>
@@ -333,19 +291,7 @@ export default function ProjectsPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="relative">
-                    <ProjectCard project={project} />
-                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
-                      <Lock className="h-4 w-4" />
-                      مشروع مؤمّن
-                    </div>
-                    <Button
-                      asChild
-                      className="mt-4 w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
-                    >
-                      <Link href={`/projects/${project.id}`}>تقديم عرض عيني</Link>
-                    </Button>
-                  </div>
+                  <ProjectCard project={project} />
                 </motion.div>
               ))}
             </div>
@@ -360,7 +306,7 @@ export default function ProjectsPage() {
                 <Search className="h-8 w-8 text-primary-500" />
               </div>
               <h3 className="text-xl md:text-2xl font-bold text-primary-500 mb-2">لا توجد مشاريع</h3>
-              <p className="text-gray-600 text-sm md:text-base mb-4">ماكاش مشاريع تطابق معايير البحث</p>
+              <p className="text-gray-600 text-sm md:text-base mb-4">لا توجد مشاريع تطابق معايير البحث</p>
               <Button
                 variant="outline"
                 className="border-primary-500 text-primary-500 rounded-full px-6 py-3 hover:bg-primary-50 transition-all duration-300"

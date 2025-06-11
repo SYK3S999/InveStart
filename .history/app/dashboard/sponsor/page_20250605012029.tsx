@@ -1,39 +1,39 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { Package, Search, FileText, Settings } from "lucide-react";
-import Link from "next/link";
-import ProtectedRoute from "@/components/protected-route";
+import { useEffect, useState } from "react"
+import { Navbar } from "@/components/navbar"
+import { Footer } from "@/components/footer"
+import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { Search, TrendingUp, FileText, Settings } from "lucide-react"
+import Link from "next/link"
+import ProtectedRoute from "@/components/protected-route"
 
-// Mock data for material-based dashboard
-type MaterialCommitment = { id: string; project: string; equipmentType: string; quantity: string; condition: string; blockchainVerified: boolean };
-type MaterialTransaction = { id: string; type: string; quantity: string; equipmentType: string; date: string };
-type Contract = { id: string; title: string; status: string; blockchainVerified: boolean };
+type Investment = { id: number; project: string; amount: string }
+type Transaction = { id: number; type: string; amount: string; date: string }
+type Contract = { id: number; title: string; status: string }
 
-export default function SponsorDashboard() {
-  const [commitments, setCommitments] = useState<MaterialCommitment[]>([]);
-  const [transactions, setTransactions] = useState<MaterialTransaction[]>([]);
-  const [contracts, setContracts] = useState<Contract[]>([]);
+export default function FournisseurDashboard() {
+  const [investments, setInvestments] = useState<Investment[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [contracts, setContracts] = useState<Contract[]>([])
 
   useEffect(() => {
-    // Simulate API fetch
-    setCommitments([
-      { id: "1", project: "مشروع تطبيق توصيل", equipmentType: "خوادم وأجهزة حاسوب", quantity: "10 وحدات", condition: "جديد", blockchainVerified: true },
-      { id: "2", project: "منصة تعليم إلكتروني", equipmentType: "أجهزة عرض وشاشات", quantity: "15 وحدة", condition: "جديد", blockchainVerified: false },
-    ]);
+    // Here you would typically fetch the investor's data from an API
+    // For now, we'll use dummy data
+    setInvestments([
+      { id: 1, project: "مشروع تطبيق توصيل", amount: "500,000 دج" },
+      { id: 2, project: "منصة تعليم إلكتروني", amount: "750,000 دج" },
+    ])
     setTransactions([
-      { id: "1", type: "تسليم معدات", quantity: "10 وحدات", equipmentType: "خوادم", date: "2023-06-15" },
-      { id: "2", type: "صيانة معدات", quantity: "5 وحدات", equipmentType: "شاشات", date: "2023-07-01" },
-    ]);
+      { id: 1, type: "تحويل", amount: "500,000 دج", date: "2023-06-15" },
+      { id: 2, type: "استلام أرباح", amount: "50,000 دج", date: "2023-07-01" },
+    ])
     setContracts([
-      { id: "1", title: "عقد تأجير معدات - مشروع تطبيق توصيل", status: "موقع", blockchainVerified: true },
-      { id: "2", title: "عقد تزويد مواد - منصة تعليمية", status: "قيد المراجعة", blockchainVerified: false },
-    ]);
-  }, []);
+      { id: 1, title: "عقد استثمار - مشروع 1", status: "موقع" },
+      { id: 2, title: "عقد استثمار - مشروع 2", status: "قيد المراجعة" },
+    ])
+  }, [])
 
   return (
     <ProtectedRoute allowedRoles={["sponsor"]}>
@@ -47,7 +47,7 @@ export default function SponsorDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              لوحة تحكم راعي المواد
+              لوحة تحكم المستثمر
             </motion.h1>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -58,16 +58,13 @@ export default function SponsorDashboard() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <h2 className="text-2xl font-bold text-primary-600 mb-4 flex items-center">
-                  <Package className="mr-2" /> التزامات المواد
+                  <TrendingUp className="mr-2" /> استثماراتي
                 </h2>
                 <ul className="space-y-2">
-                  {commitments.map((commitment) => (
-                    <li key={commitment.id} className="flex justify-between items-center">
-                      <span>{commitment.project}</span>
-                      <span className="text-sm text-gray-500">
-                        {commitment.quantity} {commitment.equipmentType} - {commitment.condition}
-                        {commitment.blockchainVerified ? " (موثق)" : ""}
-                      </span>
+                  {investments.map((investment) => (
+                    <li key={investment.id} className="flex justify-between items-center">
+                      <span>{investment.project}</span>
+                      <span className="text-sm text-gray-500">{investment.amount}</span>
                     </li>
                   ))}
                 </ul>
@@ -90,7 +87,7 @@ export default function SponsorDashboard() {
                     <li key={transaction.id} className="flex justify-between items-center">
                       <span>{transaction.type}</span>
                       <span className="text-sm text-gray-500">
-                        {transaction.quantity} {transaction.equipmentType} - {transaction.date}
+                        {transaction.amount} - {transaction.date}
                       </span>
                     </li>
                   ))}
@@ -111,9 +108,7 @@ export default function SponsorDashboard() {
                   {contracts.map((contract) => (
                     <li key={contract.id} className="flex justify-between items-center">
                       <span>{contract.title}</span>
-                      <span className="text-sm text-gray-500">
-                        {contract.status}{contract.blockchainVerified ? " (موثق)" : ""}
-                      </span>
+                      <span className="text-sm text-gray-500">{contract.status}</span>
                     </li>
                   ))}
                 </ul>
@@ -131,9 +126,9 @@ export default function SponsorDashboard() {
                 <h2 className="text-2xl font-bold text-primary-600 mb-4 flex items-center">
                   <Settings className="mr-2" /> الإعدادات
                 </h2>
-                <p className="text-gray-600 mb-4">قم بتحديث معلومات حسابك وتفضيلاتك</p>
+                <p className="text-gray-600 mb-4">قم بتحديث معلومات حسابك وتفضيلاتك الاستثمارية</p>
                 <Button asChild className="w-full">
-                  <Link href="/settings/sponsor">تعديل الإعدادات</Link>
+                  <Link href="/settings/fournisseur">تعديل الإعدادات</Link>
                 </Button>
               </motion.div>
             </div>
@@ -142,5 +137,5 @@ export default function SponsorDashboard() {
         <Footer />
       </div>
     </ProtectedRoute>
-  );
+  )
 }

@@ -192,7 +192,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
                 >
-                  منصة تمويل جماعي متطورة تربط رواد الأعمال بالمستثمرين في الجزائر، مع دعم عيني (معدات، أراضي) بنظام الاعتماد المستندي.
+                  منصة تمويل جماعي متطورة تربط رواد الأعمال بالمستثمرين في الجزائر، مع دعم نقدي وعيني (معدات، أراضي) بنظام الاعتماد المستندي.
                 </motion.p>
                 <motion.ul
                   className="space-y-4 mb-10 text-slate-700"
@@ -277,7 +277,7 @@ export default function Home() {
                     <LottiePlayer
                       autoplay
                       loop
-                      src="/assets/money.json"
+                      src="/assets/startup.json"
                       style={{ width: "100%", height: "100%" }}
                     />
                   </motion.div>
@@ -559,12 +559,13 @@ export default function Home() {
                 </div>
               </motion.div>
               <motion.div variants={slideUp}>
-                <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl flex items-center justify-center bg-white">
-                  <LottiePlayer
-                    autoplay
-                    loop
-                    src="/assets/security.json"
-                    style={{ width: "80%", height: "80%" }}
+                <div className="relative h-96 rounded-2xl overflow-hidden shadow-xl">
+                  <Image
+                    src="https://images.unsplash.com/photo-1516321310762-479437144403?q=80&w=2070&auto=format&fit=crop"
+                    alt="ميزات منصة INVESTART"
+                    width={600}
+                    height={400}
+                    className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary-600/40 to-transparent" />
                   <motion.div
