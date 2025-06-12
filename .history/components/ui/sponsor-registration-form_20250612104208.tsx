@@ -1,4 +1,4 @@
-// components/register/StartupRegistrationForm.tsx
+// components/register/SponsorRegistrationForm.tsx
 "use client"
 
 import { useState } from "react"
@@ -11,14 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip"
-import { Info, Upload, Camera, CheckCircle, Link } from "lucide-react"
+import { Info, Upload, Camera, CheckCircle } from "lucide-react"
 import { Toast } from "@/components/ui/toast"
 
-interface StartupRegistrationFormProps {
+interface SponsorRegistrationFormProps {
   onComplete: () => void
 }
 
-export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormProps) {
+export function SponsorRegistrationForm({ onComplete }: SponsorRegistrationFormProps) {
   const router = useRouter()
   const { register } = useAuth()
   const [step, setStep] = useState(1)
@@ -30,8 +30,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
     documentType: "",
     documentFile: null as File | null,
     faceIdVerified: false,
-    sector: "",
-    wilaya: "",
+    equipmentExpertise: "",
     termsAccepted: false,
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -59,8 +58,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
       if (!formData.documentFile) newErrors.documentFile = "يرجى رفع الوثيقة"
       if (!formData.faceIdVerified) newErrors.faceIdVerified = "يرجى إكمال التحقق من الهوية"
     } else if (currentStep === 3) {
-      if (!formData.sector) newErrors.sector = "يرجى اختيار القطاع"
-      if (!formData.wilaya) newErrors.wilaya = "يرجى اختيار الولاية"
+      if (!formData.equipmentExpertise) newErrors.equipmentExpertise = "يرجى اختيار مجال المعدات"
       if (!formData.termsAccepted) newErrors.termsAccepted = "يجب الموافقة على الشروط والأحكام"
     }
     setErrors(newErrors)
@@ -77,7 +75,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
     if (validateStep(3)) {
       setIsSubmitting(true)
       try {
-        await register(formData.fullName, formData.email, formData.password, "startup")
+        await register(formData.fullName, formData.email, formData.password, "sponsor")
         const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`
         setTransactionHash(mockTxHash)
         console.log("Registration submitted:", formData, "Blockchain Tx Hash:", mockTxHash)
@@ -114,66 +112,15 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
     clearError("faceIdVerified")
   }
 
-  const wilayas = [
-    "أدرار",
-    "الشلف",
-    "الأغواط",
-    "أم البواقي",
-    "باتنة",
-    "بجاية",
-    "بسكرة",
-    "بشار",
-    "البليدة",
-    "البويرة",
-    "تمنراست",
-    "تبسة",
-    "تلمسان",
-    "تيارت",
-    "تيزي وزو",
-    "الجزائر",
-    "الجلفة",
-    "جيجل",
-    "سطيف",
-    "سعيدة",
-    "سكيكدة",
-    "سيدي بلعباس",
-    "عنابة",
-    "قالمة",
-    "قسنطينة",
-    "المدية",
-    "مستغانم",
-    "المسيلة",
-    "معسكر",
-    "وهران",
-    "البيض",
-    "إليزي",
-    "برج بوعريريج",
-    "بومرداس",
-    "الطارف",
-    "تندوف",
-    "تيسمسيلت",
-    "الوادي",
-    "خنشلة",
-    "سوق أهراس",
-    "تيبازة",
-    "ميلة",
-    "عين الدفلى",
-    "النعامة",
-    "عين تيموشنت",
-    "غرداية",
-    "غليزان",
-    "تميمون",
-  ]
-
   const renderStepIndicator = () => (
     <div className="flex items-center justify-between mb-8 relative">
-      {["المعلومات الشخصية", "التحقق من الهوية", "تفاصيل المشروع"].map((label, index) => (
+      {["المعلومات الشخصية", "التحقق من الهوية", "تفاصيل الرعاية"].map((label, index) => (
         <div key={index} className="flex flex-col items-center relative z-10">
           <motion.div
             className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shadow-md ${
               step >= index + 1
-                ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                ? "bg-gradient-to-r from-primary-500 to-primary-600 dark:bg-gradient-to-r dark:from-primary-600 dark:to-primary-700 text-white dark:text-white"
+                : "bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-400"
             }`}
             animate={{ scale: step === index + 1 ? 1.1 : 1 }}
             transition={{ duration: 0.3 }}
@@ -185,7 +132,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
       ))}
       <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary-500 to-primary-600"
+          className="h-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700"
           initial={{ width: `${(step - 1) * 50}%` }}
           animate={{ width: `${(step - 1) * 50}%` }}
           transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -201,7 +148,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
           message={toast.message}
           type={toast.type}
           onClose={() => setToast(null)}
-          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50"
+          className="fixed top-4 left-2 right-2 sm:left-auto sm:right-4 max-w-lg z-50"
         />
       )}
       {renderStepIndicator()}
@@ -234,10 +181,10 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                   clearError("fullName")
                 }}
                 placeholder="أدخل اسمك الكامل"
-                className={`mt-1 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
-                  errors.fullName ? "border-red-500 dark:border-red-400" : ""
+                className={`mt-2 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
+                    errors.fullName ? "border-red-500 dark:border-red-400" : ""
                 }`}
-                aria-label="الاسم الكامل"
+                aria-label="Full name"
                 aria-describedby={errors.fullName ? "fullName-error" : undefined}
               />
               {errors.fullName && (
@@ -259,10 +206,10 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                   clearError("email")
                 }}
                 placeholder="أدخل بريدك الإلكتروني"
-                className={`mt-1 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
+                className={`mt-2 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
                   errors.email ? "border-red-500 dark:border-red-400" : ""
                 }`}
-                aria-label="البريد الإلكتروني"
+                aria-label="Email"
                 aria-describedby={errors.email ? "email-error" : undefined}
               />
               {errors.email && (
@@ -284,10 +231,10 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                   clearError("password")
                 }}
                 placeholder="أدخل كلمة المرور (8 أحرف على الأقل)"
-                className={`mt-1 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
+                className={`mt-2 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
                   errors.password ? "border-red-500 dark:border-red-400" : ""
                 }`}
-                aria-label="كلمة المرور"
+                aria-label="Password"
                 aria-describedby={errors.password ? "password-error" : undefined}
               />
               {errors.password && (
@@ -302,7 +249,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info className="inline-block h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
+                      <Info className="inline-block h-4 w-4 mr-1 ml-1 text-gray-500 dark:text-gray-400" />
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>أدخل رقم هاتف صالح بصيغة +213xxxxxxxxx</p>
@@ -311,6 +258,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                 </TooltipProvider>
               </Label>
               <Input
+                type="tel"
                 id="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={(e) => {
@@ -318,7 +266,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                   clearError("phoneNumber")
                 }}
                 placeholder="+213xxxxxxxxx"
-                className={`mt-1 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
+                className={`mt-2 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
                   errors.phoneNumber ? "border-red-500 dark:border-red-400" : ""
                 }`}
                 aria-label="رقم الهاتف"
@@ -332,7 +280,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
             </div>
             <Button
               onClick={handleNext}
-              className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white dark:text-gray-200 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-700 dark:hover:to-primary-800 rounded-xl py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white rounded-xl py-6 text-lg font-semibold shadow-sm hover:shadow-lg transition-all duration-300"
             >
               التالي
             </Button>
@@ -358,14 +306,14 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
               >
                 <SelectTrigger
                   id="documentType"
-                  className={`mt-1 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
+                  className={`mt-2 rounded-lg shadow-sm transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
                     errors.documentType ? "border-red-500 dark:border-red-400" : ""
                   }`}
                   aria-label="نوع الوثيقة"
                 >
                   <SelectValue placeholder="اختر نوع الوثيقة" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                <SelectContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
                   <SelectItem value="national_id" className="hover:bg-gray-100 dark:hover:bg-gray-700">
                     بطاقة وطنية
                   </SelectItem>
@@ -390,7 +338,7 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                       <Info className="inline-block h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>الملف يجب أن يكون PDF، JPEG، أو PNG بحد أقصى 5MB.</p>
+                      <p>الملف يجب أن يكون PDF、JPEG、أو PNG بحد أقصى 5MB.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -406,15 +354,17 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                 <Button
                   variant="outline"
                   onClick={() => document.getElementById("documentFile")?.click()}
-                  className={`w-full rounded-lg shadow-sm flex items-center gap-3 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    formData.documentFile ? "border-green-500 dark:border-green-600 bg-green-50 dark:bg-green-900" : ""
+                  className={`w-full rounded-lg shadow-sm flex items-center justify-between gap-3 px-4 py-5 transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                    formData.documentFile ? "border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/50" : ""
                   }`}
                   aria-label="رفع الوثيقة"
                 >
-                  <Upload className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span className="truncate">
-                    {formData.documentFile ? formData.documentFile.name : "اختر ملف (PDF، JPEG، أو PNG)"}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <Upload className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span className="truncate max-w-[200px]">
+                      {formData.documentFile ? formData.documentFile.name : "اختر ملف (PDF、JPEG、أو PNG)"}
+                    </span>
+                  </div>
                   {formData.documentFile && <CheckCircle className="h-4 w-4 text-green-500 dark:text-green-400" />}
                 </Button>
               </div>
@@ -440,8 +390,8 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
                 variant="outline"
                 onClick={handleFaceIdMock}
                 disabled={formData.faceIdVerified}
-                className={`w-full rounded-lg flex items-center justify-center gap-3 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                    formData.faceIdVerified ? "border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900" : ""
+                className={`w-full rounded-lg shadow-sm flex items-center justify-center gap-2 px-4 py-5 transition-all duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 ${
+                    formData.faceIdVerified ? "border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/50" : ""
                 }`}
                 aria-label="التحقق من الهوية"
               >
@@ -465,150 +415,129 @@ export function StartupRegistrationForm({ onComplete }: StartupRegistrationFormP
               <Button
                 variant="outline"
                 onClick={() => setStep(1)}
-                className="w-full rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-300 border-gray-500 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-900 py-4"
+                className="w-full rounded-lg shadow-sm bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 py-4"
               >
                 السابق
               </Button>
               <Button
                 onClick={handleNext}
-                className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white dark:text-gray-200 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-700 dark:hover:to-primary-800 rounded-xl py-4 text-lg-auto font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white rounded-xl py-6 text-lg font-semibold shadow-sm hover:shadow-lg transition-all duration-200"
               >
-                التالي
-              </Button>
-            </div>
-          </motion.fieldset>
-        )}
-        {step === 3 && (
-          <motion.fieldset
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-6"
-          >
-            <div>
-              <Label htmlFor="sector" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                قطاع المشروع
-              </Label>
-              <Select
-                onValueChange={(value) => {
-                  setFormData({ ...formData, sector: value })
-                  clearError("sector")
-                }}
-                value={formData.sector}
+              التالي
+            </Button>
+          </div>
+        </motion.fieldset>
+      )}
+      {step === 3 && (
+        <motion.fieldset
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-6"
+        >
+          <div>
+            <Label htmlFor="equipmentExpertise" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              مجال المعدات
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Info className="inline-block h-4 w-4 mr-1 text-gray-500 dark:text-gray-400" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>اختر نوع المعدات التي يمكنك تقديمها كراعي مواد.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </Label>
+            <Select
+              onValueChange={(value) => {
+                setFormData({ ...formData, equipmentExpertise: value })
+                clearError("equipmentExpertise")
+              }}
+              value={formData.equipmentExpertise}
+            >
+              <SelectTrigger
+                id="equipmentExpertise"
+                className={`mt-2 rounded-lg shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 focus:border-transparent ${
+                  errors.equipmentExpertise ? "border-red-500 dark:border-red-400" : ""
+                }`}
+                aria-label="مجال المعدات"
               >
-                <SelectTrigger
-                  id="sector"
-                  className={`mt-1 rounded-lg shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${
-                    errors.sector ? "border-red-500 dark:border-red-400" : ""
-                  }`}
-                  aria-label="قطاع المشروع"
-                >
-                  <SelectValue placeholder="اختر القطاع" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg shadow-sm">
-                  <SelectItem value="الصناعة التحويلية" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    الصناعة التحويلية
-                  </SelectItem>
-                  <SelectItem value="تكنولوجيا المعلومات" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    تكنولوجيا المعلومات
-                  </SelectItem>
-                  <SelectItem value="الزراعة العضوية" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    الزراعة العضوية
-                  </SelectItem>
-                  <SelectItem value="خدمات" className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    خدمات
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.sector && <p className="text-red-500 dark:text-red-400 text-xs mt-2">{errors.sector}</p>}
-            </div>
-            <div>
-              <Label htmlFor="wilaya" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                الولاية
-              </Label>
-              <Select
-                onValueChange={(value) => {
-                  setFormData({ ...formData, wilaya: value })
-                  clearError("wilaya")
-                }}
-                value={formData.wilaya}
-              >
-                <SelectTrigger
-                    id="wilaya"
-                    className={`mt-1 rounded-lg shadow-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-600 focus:border-transparent ${errors.wilaya ? "border-red-500 dark:border-red-400" : ""}`}
-                    aria-label="الولاية"
-                  >
-                  <SelectValue placeholder="اختر الولاية" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600 rounded-lg max-h-60 overflow-y-auto">
-                  {wilayas.map((wilaya) => (
-                    <SelectItem
-                      key={wilaya}
-                      value={wilaya}
-                      className="hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      {wilaya}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.wilaya && <p className="text-red-500 dark:text-red-400 text-xs mt-2">{errors.wilaya}</p>}
-            </div>
-            <div className="flex items-center gap-3">
-              <Checkbox
-                id="termsAccepted"
-                checked={formData.termsAccepted}
-                onCheckedChange={(checked) => {
-                  setFormData({ ...formData, termsAccepted: !!checked })
-                  clearError("termsAccepted")
-                }}
-                className="h-5 rounded border w-5 h-full border-gray-200 dark:border-gray-600 text-primary-500 focus:ring-primary-500 dark:text-primary-300 data-[state=checked]:bg-primary-500 dark:data-[state=checked]:bg-primary-400 data-[state=checked]:text-white"
-                aria-label="الموافقة على الشروط والأحكام"
-              />
-              <Label
-                htmlFor="termsAccepted"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                أوافق على{" "}
-                <Link href="/terms" className="text-primary-500 dark:text-primary-400 hover:underline">
-                  الشروط والأحكام
-                </Link>
-              </Label>
-            </div>
-            {errors.termsAccepted && (
-              <p className="text-red-500 dark:text-red-400 text-xs mt-1">{errors.termsAccepted}</p>
+                <SelectValue placeholder="اختر مجال المعدات" />
+              </SelectTrigger>
+              <SelectContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
+                <SelectItem value="الصناعة" className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                  معدات صناعية
+                </SelectItem>
+                <SelectItem value="الزراعة" className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                  معدات زراعية
+                </SelectItem>
+                <SelectItem value="التكنولوجيا" className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                  معدات تكنولوجية
+                </SelectItem>
+                <SelectItem value="أخرى" className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                  أخرى
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.equipmentExpertise && (
+              <p className="text-red-500 dark:text-red-400 text-xs mt-2">{errors.equipmentExpertise}</p>
             )}
-            {transactionHash && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg"
-              >
-                <p className="text-gray-600 dark:text-gray-400 text-sm break-all">
-                  رمز العميلة على البلوكشين:{" "}
-                  <span className="font-mono text-primary-500 dark:text-primary-400">{transactionHash}</span>
-                </p>
-              </motion.div>
-            )}
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setStep(2)}
-                className="w-full rounded-lg shadow-sm py-4 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-500 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-900"
-              >
-                السابق
-              </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={isSubmitting || !!transactionHash}
-                className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white dark:text-gray-200 hover:from-primary-600 hover:to-primary-700 dark:hover:from-primary-700 dark:hover:to-primary-800 rounded-xl py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 dark:disabled:opacity-40"
-              >
-                {isSubmitting ? "جاري الإنشاء..." : "إنشاء الحساب"}
-              </Button>
-            </div>
-          </motion.fieldset>
-        )}
-      </form>
-    </div>
-  )
-}
+          </div>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="termsAccepted"
+              checked={formData.termsAccepted}
+              onCheckedChange={(checked) => {
+                setFormData({ ...formData, termsAccepted: !!checked })
+                clearError("termsAccepted")
+              }}
+              className="h-4 w-5 rounded border-gray-300 dark:border-gray-600 text-primary-500 dark:text-primary-400 focus:ring-primary-500 dark:focus:ring-primary-400 data-[state=checked]:bg-primary-500 dark:data-[state=checked]:text-white"
+              aria-label="الموافقة على الشروط والأحكام"
+            />
+            <Label
+              htmlFor="termsAccepted"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              أوافق على{" "}
+              <a href="/terms" className="text-primary-500 dark:text-primary-400 hover:underline">
+                الشروط والأحكام
+              </a>
+            </Label>
+          </div>
+          {errors.termsAccepted && (
+            <p className="text-red-500 dark:text-red-400 mt-1">{errors.termsAccepted}</p>
+          )}
+          {transactionHash && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 bg-white dark:bg-gray-800 border bg-gray-200 dark:border-gray-700 rounded-lg"
+            >
+              <p className="text-gray-600 dark:text-gray-400 text-sm break-all">
+                رمز العملية على البلوكشين: {" "}
+                <span className="font-mono text-primary-500 dark:text-primary-400">{transactionHash}</span>
+              </p>
+            </motion.div>
+          )}
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setStep(2)}
+              className="w-full rounded-lg shadow-sm bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 py-4"
+            >
+              السابق
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              disabled={isSubmitting || !!transactionHash}
+              className="w-full bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 text-white rounded-xl py-6 text-lg font-semibold shadow-sm hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+            >
+              {isSubmitting ? "جاري الإنشاء..." : "إنشاء الحساب"}
+            </Button>
+          </div>
+        </motion.fieldset>
+      )}
+    </form>
+  </div>
+)}

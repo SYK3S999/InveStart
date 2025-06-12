@@ -183,7 +183,29 @@ export default function SubmitProjectPage() {
     setSubmitError("")
 
     try {
-      // In a real app, you would send the form data to an API
+      // Prepare the data to match Omit<Project, "id">
+      // Adjust the property names/types as per your Project interface
+      const projectToSubmit = {
+        title: formData.title,
+        description: formData.fullDescription,
+        category: formData.category,
+        goal: Number(formData.goalAmount),
+        equity: Number(formData.equity),
+        duration: Number(formData.duration),
+        minInvestment: formData.minInvestment ? Number(formData.minInvestment) : undefined,
+        maxInvestment: formData.maxInvestment ? Number(formData.maxInvestment) : undefined,
+        tags: formData.tags,
+        images: formData.images,
+        coverImage: formData.coverImage,
+        businessPlan: formData.businessPlan,
+        financialProjections: formData.financialProjections,
+        teamMembers: formData.teamMembers,
+        milestones: formData.milestones,
+        risks: formData.risks,
+        // Add any other required fields from Project except "id"
+      }
+
+      // In a real app, you would send the projectToSubmit to an API
       await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate API call
 
       // Simulate successful submission

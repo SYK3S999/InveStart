@@ -706,7 +706,7 @@ export default function ProjectDetailsPage() {
                       asChild
                       className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
                     >
-                      <Link href={`/projects/edit/${project.id}`}>
+                      <Link href={`/projects/${project.id}/edit`}>
                         <Edit className="h-4 w-4" />
                         تعديل المشروع
                       </Link>

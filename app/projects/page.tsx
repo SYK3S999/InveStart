@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 
 // Hardcoded RBAC logic for Fournisseur role
 const useAuth = () => {
-  // Simulated user data (replace with your auth logic)
   const user = { role: "fournisseur", id: "user123" }; // Hardcoded for demo
   return { isAuthenticated: !!user, role: user?.role || null };
 };
@@ -133,25 +132,22 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen font-amiri bg-gradient-to-b from-white to-cream text-primary-900">
+    <div className="flex flex-col min-h-screen font-amiri bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 text-primary-900 dark:text-gray-200">
       <Navbar />
       <main className="flex-1 py-12 md:py-24 overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-          <div className="absolute top-10 right-10 w-64 h-64 rounded-full border-4 border-dashed border-primary-200/30 opacity-50"></div>
-          <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full border-2 border-primary-300/20"></div>
-          <div className="absolute top-1/3 left-1/3 w-16 h-16 rotate-45 border-2 border-primary-200/30"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border-2 border-primary-200/30 rounded-lg rotate-12"></div>
+          <div className="absolute top-10 right-10 w-64 h-64 rounded-full border-4 border-dashed border-primary-200/50 dark:border-primary-600/30 opacity-50"></div>
+          <div className="absolute bottom-20 left-2xl w-32 h-32 rounded-xl border-2 border-primary-300/20 dark:border-primary-600/20"></div>
+          <div className="absolute top-1/3 left-1/3 w-16 h-16 rounded-full border-2 border-primary-200/30 dark:border-primary-400/30"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-24 h-24 border-2 border-primary-200/30 dark:border-primary-400/30 rounded-lg rotate-20"></div>
         </div>
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl relative z-10">
           <motion.div
             className="text-center mb-10 md:mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-500 mb-4">استكشف المشاريع</h1>
-            <p className="text-gray-600 text-sm md:text-lg max-w-2xl mx-auto">
+            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-600 dark:text-primary-400 mb-4">استكشف المشاريع</h1>
+            <p className="text-gray-600 dark:text-gray-300 text-sm md:text-lg max-w-md:2xl mx-auto">
               تصفح مشاريع مبتكرة وابحث عن فرص لتقديم دعم عيني أو تأجيري في الجزائر
             </p>
           </motion.div>
@@ -159,7 +155,7 @@ export default function ProjectsPage() {
           {/* Featured Project Banner with Blockchain Indicator */}
           {featuredProject && (
             <motion.div
-              className="bg-primary-50 rounded-xl shadow-lg p-6 md:p-8 mb-8 md:mb-12 border border-primary-100/50 flex flex-col md:flex-row items-center gap-6"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mb-8 md:mb-12 border border-primary-100/50 dark:border-primary-700/50 flex flex-col md:flex-row items-center gap-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -171,17 +167,17 @@ export default function ProjectsPage() {
                   fill
                   className="object-cover rounded-lg"
                 />
-                <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                <div className="absolute top-2 right-2 bg-green-500 dark:bg-green-600 text-white dark:text-gray-200 px-2 py-1 rounded-full text-xs flex items-center gap-1">
                   <Lock className="h-4 w-4" />
                   مؤمّن عبر البلوكشين
                 </div>
               </div>
               <div className="w-full md:w-1/2 text-center md:text-right">
-                <h2 className="text-xl md:text-2xl font-bold text-primary-500 mb-2">{featuredProject.title}</h2>
-                <p className="text-gray-600 text-sm md:text-base mb-4">{featuredProject.description.substring(0, 100)}...</p>
+                <h2 className="text-xl md:text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">{featuredProject.title}</h2>
+                <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base mb-4">{featuredProject.description.substring(0, 100)}...</p>
                 <Button
                   asChild
-                  className="bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
+                  className="bg-primary-500 dark:bg-primary-600 text-white dark:text-gray-200 rounded-full px-6 py-3 hover:bg-primary-600 dark:hover:bg-primary-500 shadow-md transition-all duration-300"
                 >
                   <Link href={`/projects/${featuredProject.id}`}>تقديم عرض عيني</Link>
                 </Button>
@@ -202,8 +198,8 @@ export default function ProjectsPage() {
                 variant={sectorFilter === sector ? "default" : "outline"}
                 className={`rounded-full px-4 py-2 text-sm md:text-base ${
                   sectorFilter === sector
-                    ? "bg-primary-500 text-white hover:bg-primary-600"
-                    : "border-primary-500 text-primary-500 hover:bg-primary-50"
+                    ? "bg-primary-500 dark:bg-primary-600 text-white dark:text-gray-200 hover:bg-primary-600 dark:hover:bg-primary-500"
+                    : "border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900"
                 } transition-all duration-300`}
                 onClick={() => setSectorFilter(sector)}
               >
@@ -214,7 +210,7 @@ export default function ProjectsPage() {
 
           {/* Search and Filters */}
           <motion.div
-            className="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8 md:mb-12 border border-primary-100/50"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 md:p-8 mb-8 md:mb-12 border border-primary-100/50 dark:border-primary-700/50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
@@ -224,22 +220,22 @@ export default function ProjectsPage() {
                 <input
                   type="text"
                   placeholder="ابحث عن مشروع..."
-                  className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200 pr-10"
+                  className="w-full px-4 py-3 border border-primary-200 dark:border-primary-700 rounded-lg bg-white dark:bg-gray-800 text-primary-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-500 focus:border-primary-400 dark:focus:border-primary-500 transition-all duration-200 pr-10"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary-500" />
+                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-primary-500 dark:text-primary-400" />
               </div>
               <Button
                 variant="outline"
-                className="md:w-auto w-full flex items-center gap-2 border-primary-500 text-primary-500 rounded-full px-6 py-3 hover:bg-primary-50 transition-all duration-300"
+                className="md:w-auto w-full flex items-center gap-2 border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 rounded-full px-6 py-3 hover:bg-primary-50 dark:hover:bg-primary-900 transition-all duration-300"
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="h-4 w-4" />
                 <span>الفلاتر</span>
               </Button>
               <Button
-                className="md:w-auto w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
+                className="md:w-auto w-full bg-primary-500 dark:bg-primary-600 text-white dark:text-gray-200 rounded-full px-6 py-3 hover:bg-primary-600 dark:hover:bg-primary-500 shadow-md transition-all duration-300"
                 onClick={resetFilters}
               >
                 إعادة ضبط
@@ -248,15 +244,15 @@ export default function ProjectsPage() {
 
             {showFilters && (
               <motion.div
-                className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-primary-200"
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-primary-200 dark:border-primary-700"
                 variants={filterVariants}
                 initial="hidden"
                 animate="visible"
               >
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">الولاية</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-600 dark:text-primary-400 mb-2">الولاية</label>
                   <select
-                    className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-primary-200 dark:border-primary-700 rounded-lg bg-white dark:bg-gray-800 text-primary-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-500 focus:border-primary-400 dark:focus:border-primary-500 transition-all duration-200"
                     value={wilayaFilter}
                     onChange={(e) => setWilayaFilter(e.target.value)}
                   >
@@ -266,9 +262,9 @@ export default function ProjectsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">القطاع</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-600 dark:text-primary-400 mb-2">القطاع</label>
                   <select
-                    className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-primary-200 dark:border-primary-700 rounded-lg bg-white dark:bg-gray-800 text-primary-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-500 focus:border-primary-400 dark:focus:border-primary-500 transition-all duration-200"
                     value={sectorFilter}
                     onChange={(e) => setSectorFilter(e.target.value)}
                   >
@@ -278,9 +274,9 @@ export default function ProjectsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm md:text-base font-medium text-primary-500 mb-2">نوع العتاد</label>
+                  <label className="block text-sm md:text-base font-medium text-primary-600 dark:text-primary-400 mb-2">نوع العتاد</label>
                   <select
-                    className="w-full px-4 py-3 border border-primary-200 rounded-lg bg-white text-primary-900 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition-all duration-200"
+                    className="w-full px-4 py-3 border border-primary-200 dark:border-primary-700 rounded-lg bg-white dark:bg-gray-800 text-primary-900 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-400 dark:focus:ring-primary-500 focus:border-primary-400 dark:focus:border-primary-500 transition-all duration-200"
                     value={equipmentFilter}
                     onChange={(e) => setEquipmentFilter(e.target.value)}
                   >
@@ -300,13 +296,13 @@ export default function ProjectsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <p className="text-gray-600 text-sm md:text-base">
-              تم العثور على <span className="font-bold text-primary-500">{filteredProjects.length}</span> مشروع
+            <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
+              تم العثور على <span className="font-bold text-primary-600 dark:text-primary-400">{filteredProjects.length}</span> مشروع
             </p>
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="border-primary-500 text-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-all duration-300"
+                className="border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 rounded-full px-4 py-2 hover:bg-primary-50 dark:hover:bg-primary-900 transition-all duration-300"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
@@ -314,7 +310,7 @@ export default function ProjectsPage() {
               </Button>
               <Button
                 variant="outline"
-                className="border-primary-500 text-primary-500 rounded-full px-4 py-2 hover:bg-primary-50 transition-all duration-300"
+                className="border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 rounded-full px-4 py-2 hover:bg-primary-50 dark:hover:bg-primary-900 transition-all duration-300"
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
@@ -335,13 +331,13 @@ export default function ProjectsPage() {
                 >
                   <div className="relative">
                     <ProjectCard project={project} />
-                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
+                    <div className="absolute top-2 right-2 bg-green-500 dark:bg-green-600 text-white dark:text-gray-200 px-2 py-1 rounded-full text-xs flex items-center gap-1">
                       <Lock className="h-4 w-4" />
                       مشروع مؤمّن
                     </div>
                     <Button
                       asChild
-                      className="mt-4 w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300"
+                      className="mt-4 w-full bg-primary-500 dark:bg-primary-600 text-white dark:text-gray-200 rounded-full px-6 py-3 hover:bg-primary-600 dark:hover:bg-primary-500 shadow-md transition-all duration-300"
                     >
                       <Link href={`/projects/${project.id}`}>تقديم عرض عيني</Link>
                     </Button>
@@ -351,19 +347,19 @@ export default function ProjectsPage() {
             </div>
           ) : (
             <motion.div
-              className="text-center py-12 bg-white rounded-xl shadow-lg border border-primary-100/50"
+              className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-primary-100/50 dark:border-primary-700/50"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
-                <Search className="h-8 w-8 text-primary-500" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 dark:bg-primary-900 mb-4">
+                <Search className="h-8 w-8 text-primary-600 dark:text-primary-400" />
               </div>
-              <h3 className="text-xl md:text-2xl font-bold text-primary-500 mb-2">لا توجد مشاريع</h3>
-              <p className="text-gray-600 text-sm md:text-base mb-4">ماكاش مشاريع تطابق معايير البحث</p>
+              <h3 className="text-xl md:text-2xl font-bold text-primary-600 dark:text-primary-400 mb-2">لا توجد مشاريع</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base mb-4">ماكاش مشاريع تطابق معايير البحث</p>
               <Button
                 variant="outline"
-                className="border-primary-500 text-primary-500 rounded-full px-6 py-3 hover:bg-primary-50 transition-all duration-300"
+                className="border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 rounded-full px-6 py-3 hover:bg-primary-50 dark:hover:bg-primary-900 transition-all duration-300"
                 onClick={resetFilters}
               >
                 إعادة ضبط الفلاتر
@@ -385,8 +381,8 @@ export default function ProjectsPage() {
                   variant={currentPage === page ? "default" : "outline"}
                   className={`rounded-full px-4 py-2 ${
                     currentPage === page
-                      ? "bg-primary-500 text-white hover:bg-primary-600"
-                      : "border-primary-500 text-primary-500 hover:bg-primary-50"
+                      ? "bg-primary-500 dark:bg-primary-600 text-white dark:text-gray-200 hover:bg-primary-600 dark:hover:bg-primary-500"
+                      : "border-primary-500 dark:border-primary-600 text-primary-500 dark:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900"
                   } transition-all duration-300`}
                   onClick={() => setCurrentPage(page)}
                 >

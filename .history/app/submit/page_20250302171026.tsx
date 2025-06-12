@@ -82,17 +82,12 @@ export default function SubmitProjectPage() {
       title: formData.title,
       description: formData.description,
       category: formData.category,
-      goal: { cash: formData.cashGoal, inKind: formData.inKindGoal || null, equipment: null },
-      raised: { cash: 0, inKind: null, equipment: null },
+      goal: { cash: formData.cashGoal, inKind: formData.inKindGoal || null },
+      raised: { cash: 0, inKind: null },
       documents: formData.documents,
       updates: [],
       messages: [],
       images: formData.images.length > 0 ? formData.images : ["/placeholder.svg?height=400&width=600"],
-      status: "pending",
-      wilaya: "",
-      sector: "",
-      equipmentType: "",
-      blockchainVerified: false,
     };
 
     saveProject(project);

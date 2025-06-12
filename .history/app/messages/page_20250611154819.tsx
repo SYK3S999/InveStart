@@ -694,26 +694,7 @@ export default function MessagesPage() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.2 } },
   };
-  const Sidebar = ({
-    isSidebarOpen,
-    setIsSidebarOpen,
-  }: {
-    isSidebarOpen: boolean;
-    setIsSidebarOpen: (open: boolean) => void;
-  }) => {
-  const [windowWidth, setWindowWidth] = useState<number | null>(null)
 
-  useEffect(() => {
-    // Set initial width
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    handleResize()
-
-    // Update width on resize
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  const isMobile = windowWidth !== null && windowWidth < 768
   return (
     <ProtectedRoute allowedRoles={["startup", "sponsor"]}>
       <div className="flex flex-col min-h-screen font-amiri bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
@@ -733,10 +714,10 @@ export default function MessagesPage() {
             <div className="bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-700 h-[calc(80vh-100px)] min-h-[500px]">
               <div className="flex h-full">
                 <AnimatePresence>
-                  {(isSidebarOpen || (windowWidth !== null && windowWidth >= 768)) && (
+                  {(isSidebarOpen || window.innerWidth >= 768) && (
                     <motion.aside
                       className={`${
-                        isMobile
+                        window.innerWidth < 768
                           ? "fixed inset-y-0 left-0 w-64 z-50"
                           : "w-full md:w-1/3 lg:w-1/4"
                       } bg-gray-800 border-l border-gray-700 flex flex-col`}
@@ -747,7 +728,7 @@ export default function MessagesPage() {
                     >
                       <div className="p-4 border-b border-gray-700 flex justify-between items-center">
                         <h2 className="text-lg font-bold text-blue-400">المحادثات</h2>
-                        {isMobile && (
+                        {window.innerWidth < 768 && (
                           <Button
                             variant="ghost"
                             size="icon"
@@ -755,7 +736,7 @@ export default function MessagesPage() {
                             className="text-gray-400 hover:text-blue-400"
                           >
                             <X className="h-6 w-6" />
-              </Button>
+                          </Button>
                         )}
                       </div>
                       <div className="p-4">
@@ -1201,5 +1182,4 @@ export default function MessagesPage() {
       </div>
     </ProtectedRoute>
   );
-}
 }

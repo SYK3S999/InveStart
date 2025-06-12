@@ -284,6 +284,15 @@ export const initialProjects: Project[] = [
     ],
   },
 ];
+// storage.ts (suggested addition)
+export function updateProject(projectId: number, updatedData: Partial<Project>): Project | null {
+  const projects = JSON.parse(localStorage.getItem("projects") || "[]");
+  const projectIndex = projects.findIndex((p: Project) => p.id === projectId);
+  if (projectIndex === -1) return null;
+  projects[projectIndex] = { ...projects[projectIndex], ...updatedData };
+  localStorage.setItem("projects", JSON.stringify(projects));
+  return projects[projectIndex];
+}
 
 // Utility functions
 export function formatDate(dateString: string): string {
