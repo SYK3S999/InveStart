@@ -9,20 +9,14 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
-import { useAuth } from "@/lib/authContext"
 
 interface ProjectCardProps {
   project: Project
   featured?: boolean
 }
-
 export function ProjectCard({ project, featured = false }: ProjectCardProps) {
-  const { user } = useAuth()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showSnackBar, setShowSnackBar] = useState(false)
-
-  const isInvestor = user?.role === "sponsor"
-  const isLoggedIn = !!user
-
   const progress = calculateProgress(
     project.raised.equipment ? project.raised.equipment.quantity : 0,
     project.goal.equipment ? project.goal.equipment.quantity : 0
@@ -117,7 +111,7 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
           )}
         </div>
         
-        {/* Bottom info bar */}
+        {/* Bottom info bar, always visible but more pronounced on hover */}
         <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300">
           <div className="flex justify-between items-center text-white">
             <div className="flex items-center gap-1.5">
@@ -149,93 +143,79 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
       <div className="p-5 space-y-4">
         <div>
           <h3 className="text-xl font-bold mb-1.5 line-clamp-1 text-gray-800 group-hover:text-primary transition-colors duration-300">
-            {project.title}
+        {project.title}
           </h3>
           <p className="text-muted-foreground text-sm line-clamp-2">{project.description}</p>
         </div>
 
         <div className="pt-1">
           <div className="flex justify-between text-sm mb-2.5">
-            <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">تم تزويد</span>
-              <span className="font-bold text-gray-800">
-                {project.raised.equipment ? `${project.raised.equipment.quantity} وحدة ${project.raised.equipment.type}` : "0 وحدة"}
-              </span>
-            </div>
-            <div className="flex flex-col items-end">
-              <span className="text-xs text-muted-foreground">الهدف</span>
-              <span className="font-medium text-gray-600">
-                {project.goal.equipment ? `${project.goal.equipment.quantity} وحدة ${project.goal.equipment.type}` : "غير محدد"}
-              </span>
-            </div>
+        <div className="flex flex-col">
+          <span className="text-xs text-muted-foreground">تم تزويد</span>
+          <span className="font-bold text-gray-800">
+            {project.raised.equipment ? `${project.raised.equipment.quantity} وحدة ${project.raised.equipment.type}` : "0 وحدة"}
+          </span>
+        </div>
+        <div className="flex flex-col items-end">
+          <span className="text-xs text-muted-foreground">الهدف</span>
+          <span className="font-medium text-gray-600">
+            {project.goal.equipment ? `${project.goal.equipment.quantity} وحدة ${project.goal.equipment.type}` : "غير محدد"}
+          </span>
+        </div>
           </div>
           
           {/* Enhanced progress bar with gradient */}
           <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-            <motion.div 
-              className={`bg-gradient-to-r ${getProgressColor()} h-2.5 rounded-full`} 
-              initial={{ width: "0%" }}
-              animate={{ width: `${percentageToShow}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            ></motion.div>
+        <motion.div 
+          className={`bg-gradient-to-r ${getProgressColor()} h-2.5 rounded-full`} 
+          initial={{ width: "0%" }}
+          animate={{ width: `${percentageToShow}%` }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        ></motion.div>
           </div>
           
           <div className="mt-2.5 text-center">
-            <span className="inline-block px-4 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-gray-700 shadow-sm">
-              تم تزويد <span className="text-primary font-bold">{progress}%</span> من المعدات
-            </span>
+        <span className="inline-block px-4 py-1.5 bg-gray-50 rounded-full text-xs font-medium text-gray-700 shadow-sm">
+          تم تزويد <span className="text-primary font-bold">{progress}%</span> من المعدات
+        </span>
           </div>
         </div>
 
-        {isLoggedIn && isInvestor ? (
-          <Link
-            href={`/projects/${project.id}`}
-            className="block w-full text-center bg-primary hover:bg-primary-700 text-white py-3.5 rounded-xl transition-all duration-300 font-medium shadow-sm hover:shadow-md group relative overflow-hidden"
-          >
-            <span className="relative z-10">عرض التفاصيل</span>
-            <motion.span 
-              className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              initial={{ x: "-100%" }}
-              whileHover={{ x: 0 }}
-              transition={{ duration: 0.3 }}
-            ></motion.span>
-          </Link>
-        ) : (
-          <button
-            onClick={() => setShowSnackBar(true)}
-            className="block w-full text-center bg-primary hover:bg-primary-700 text-white py-3.5 rounded-xl transition-all duration-300 font-medium shadow-sm hover:shadow-md"
-          >
-            عرض التفاصيل
-          </button>
-        )}
+        <Link
+          href={isLoggedIn ? `/projects/${project.id}` : "#"}
+          onClick={(e) => {
+        if (!isLoggedIn) {
+          // Prevent navigation and show snack bar if user is not logged in.
+          e.preventDefault();
+          setShowSnackBar(true);
+        }
+          }}
+          className="block w-full text-center bg-primary hover:bg-primary-700 text-white py-3.5 rounded-xl transition-all duration-300 font-medium shadow-sm hover:shadow-md group relative overflow-hidden"
+        >
+          <span className="relative z-10">عرض التفاصيل</span>
+          <motion.span 
+        className="absolute inset-0 bg-gradient-to-r from-primary-600 to-primary-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        initial={{ x: "-100%" }}
+        whileHover={{ x: 0 }}
+        transition={{ duration: 0.3 }}
+          ></motion.span>
+        </Link>
 
         {showSnackBar && (
-          <motion.div
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-4 rounded-lg shadow-xl z-50 max-w-sm w-full"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.3 }}
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-md shadow-lg z-50">
+        <p>يرجى تسجيل الدخول لعرض تفاصيل المشروع.</p>
+        <div className="mt-2 flex justify-end gap-4">
+          <Link href="/login" className="underline">
+            تسجيل الدخول
+          </Link>
+          <button 
+            onClick={() => setShowSnackBar(false)}
+            className="text-red-300"
           >
-            <p className="text-sm font-medium text-center">
-              يرجى تسجيل الدخول كمستثمر لعرض تفاصيل المشروع
-            </p>
-            <div className="mt-4 flex justify-center gap-4">
-              <Link
-                href="/login"
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium underline"
-                onClick={() => setShowSnackBar(false)}
-              >
-                تسجيل الدخول
-              </Link>
-              <button
-                onClick={() => setShowSnackBar(false)}
-                className="text-red-400 hover:text-red-300 text-sm font-medium"
-              >
-                إغلاق
-              </button>
-            </div>
-          </motion.div>
+            إغلاق
+          </button>
+        </div>
+          </div>
         )}
       </div>
     </motion.div>

@@ -94,7 +94,7 @@ export function Navbar() {
     ],
     sponsor: [
       { href: '/dashboard/sponsor', label: 'لوحة التحكم', icon: <LayoutDashboard className='h-4 w-4 ml-2' /> },
-      // { href: '/projects', label: 'استكشاف المشاريع', icon: <Briefcase className='h-4 w-4 ml-2' /> },
+      { href: '/projects', label: 'استكشاف المشاريع', icon: <Briefcase className='h-4 w-4 ml-2' /> },
       { href: '/investments', label: 'عروضي', icon: <Briefcase className='h-4 w-4 ml-2' /> },
       { href: '/contracts', label: 'العقود', icon: <FileText className='h-4 w-4 ml-2' /> },
     ],

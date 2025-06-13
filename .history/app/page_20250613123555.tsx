@@ -74,15 +74,15 @@ export default function Home() {
       accentColor: "primary",
     },
     {
-      value: "+200",
-      label: "مستثمر ",
+      value: "+500",
+      label: "مستثمر نشط",
       icon: <User className="w-10 h-10 mb-4 text-secondary-600 dark:text-secondary-400" />,
       bgGradient: "from-secondary-100 to-white dark:from-secondary-900 dark:to-gray-800",
       accentColor: "secondary",
     },
     {
       value: "+200",
-      label: "صاحب مشروع",
+      label: "صاحب فكرة",
       icon: <Rocket className="w-10 h-10 mb-4 text-accent-400 dark:text-accent-300" />,
       bgGradient: "from-accent-100 to-white dark:from-accent-900 dark:to-gray-800",
       accentColor: "accent",
@@ -298,7 +298,7 @@ export default function Home() {
             <motion.div className="text-center mb-16" variants={fadeIn}>
               <h2 className="text-3xl md:text-4xl font-bold text-primary-600 dark:text-primary-400">إحصائيات منصتنا</h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg mt-4 max-w-2xl mx-auto">
-                اكتشف تأثير منصتنا في دعم المؤسسات في الجزائر بالتمويل التأجيري
+                اكتشف تأثير منصتنا في دعم المشاريع الناشئة في الجزائر بتمويل عيني وتأجيري
               </p>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -355,11 +355,11 @@ export default function Home() {
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-secondary-600 dark:text-secondary-400">مشاريع مميزة</h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg mt-4 max-w-2xl mx-auto">
-              تصفح أفضل المشاريع في الجزائر التي تبحث عن تأجير تمويلي
+                تصفح أفضل المشاريع الناشئة في الجزائر التي تبحث عن تمويل عيني أو تأجيري
               </p>
-              
               <p className="text-sm text-primary-600 dark:text-primary-400 mt-2">
-ملاحظة: التمويل مقتصر على الدعم العيني في شكل تمويل تاجيري وقد يتعدى إلى شراكات                 </p>
+                ملاحظة: التمويل مقتصر على الدعم العيني (معدات، مواد) أو التأجير فقط
+              </p>
             </motion.div>
             <div className="flex justify-center mb-8">
               <Button
@@ -491,8 +491,8 @@ export default function Home() {
                   {[
                     {
                       icon: Briefcase,
-                      title: "تمويل تأجيري فقط",
-                      desc: "نوفر معدات ومواد عينية بعقود تمويل تاجيري فعالة",
+                      title: "تمويل عيني وتأجيري فقط",
+                      desc: "نوفر معدات ومواد عينية أو عقود تأجير بأمان، بدون تمويل نقدي",
                       color: "primary",
                     },
                     {
@@ -585,7 +585,7 @@ export default function Home() {
                 جاهز باش تبدأ مشروعك أو تدعم فكرة؟
               </h2>
               <p className="text-gray-600 dark:text-gray-300 text-lg mt-4 max-w-2xl mx-auto">
-                انضم إلى INVESTSTART وابدأ رحلتك نحو النجاح مع عقود أمنة عبر البلوكشين، تمويل تاجيري فقط، بدون نقود! 
+                انضم إلى INVESTART وابدأ رحلتك نحو النجاح مع عقود آمنة عبر البلوكشين. التمويل عيني أو تأجيري فقط، بدون نقود!
               </p>
               <div className="flex justify-center items-center mt-4 text-sm text-primary-600 dark:text-primary-400">
                 <Lock className="w-5 h-5 ml-2" />

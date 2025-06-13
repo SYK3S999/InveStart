@@ -443,83 +443,7 @@ export default function MessagesPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [isTyping, setIsTyping] = useState(false);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [selectedFeeType, setSelectedFeeType] = useState<"investorFeePaid" | "startupFeePaid" | "leasingFeePaid" | null>(null);
   const itemsPerPage = 5;
-
-  const openPaymentModal = (feeType: "investorFeePaid" | "startupFeePaid" | "leasingFeePaid") => {
-    setSelectedFeeType(feeType);
-    setShowPaymentModal(true);
-  };
-
-  const closePaymentModal = () => {
-    setSelectedFeeType(null);
-    setShowPaymentModal(false);
-  };
-
-  const PaymentModal = () => {
-    return (
-      <AnimatePresence>
-        {showPaymentModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              transition={{ duration: 0.3 }}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6 relative"
-            >
-              <button
-                onClick={closePaymentModal}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-              <h3 className="text-2xl mb-4 font-bold text-blue-600">اختر طريقة الدفع</h3>
-              <p className="mb-4 text-gray-600">
-                يرجى اختيار طريقة الدفع المفضلة للرسوم المحددة. يمكنك مراجعة التفاصيل أدناه قبل المتابعة.
-              </p>
-              <div className="flex flex-col space-y-3">
-                <button
-                  onClick={() => {
-                    if (activeConversation) {
-                      handlePayFee(activeConversation.id, selectedFeeType!);
-                    }
-                    closePaymentModal();
-                  }}
-                  className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded hover:bg-blue-600 transition"
-                >
-                <button
-                  onClick={() => {
-                    if (activeConversation) {
-                      handlePayFee(activeConversation.id, selectedFeeType!);
-                    }
-                    closePaymentModal();
-                  }}
-                  className="w-full bg-yellow-500 text-white font-medium py-2 px-4 rounded hover:bg-yellow-600 transition"
-                >
-                  PayPal
-                </button>
-                  PayPal
-                </button>
-                <button
-                  onClick={closePaymentModal}
-                  className="w-full border border-gray-300 text-gray-700 font-medium py-2 px-4 rounded hover:bg-gray-100 transition"
-                >
-                  إلغاء
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    );
-  };
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -1144,114 +1068,87 @@ export default function MessagesPage() {
                           </DropdownMenu>
                         </div>
                       </div>
-                        <div className="p-4 bg-gray-900 border-b border-gray-700">
+                      <div className="p-4 bg-gray-900 border-b border-gray-700">
                         <h3 className="text-lg font-semibold text-blue-400 mb-2">تفاصيل الصفقة</h3>
                         <div className="space-y-2">
                           <p className="text-sm text-gray-300">
-                          قيمة الصفقة: {formatDZD(activeConversation.deal?.amountDZD ?? 0)}
+                            قيمة الصفقة: {formatDZD(activeConversation.deal?.amountDZD ?? 0)}
                           </p>
                           <div>
-                          <p className="text-sm font-medium text-gray-100 flex items-center gap-2">
-                            <Package className="h-5 w-5" /> العتاد المقدم:
-                          </p>
-                          <ul className="list-disc pr-5 mt-1">
-                            {activeConversation.deal?.equipment.map((item, index) => (
-                            <li key={index} className="text-sm text-gray-400">
-                              {item.name} (الكمية: {item.quantity}، القيمة: {formatDZD(item.valueDZD)})
-                            </li>
-                            ))}
-                          </ul>
+                            <p className="text-sm font-medium text-gray-100 flex items-center gap-2">
+                              <Package className="h-5 w-5" /> العتاد المقدم:
+                            </p>
+                            <ul className="list-disc pr-5 mt-1">
+                              {activeConversation.deal?.equipment.map((item, index) => (
+                                <li key={index} className="text-sm text-gray-400">
+                                  {item.name} (الكمية: {item.quantity}، القيمة: {formatDZD(item.valueDZD)})
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                           <div className="flex gap-2">
-                          {user?.role === "sponsor" &&
-                            activeConversation.deal &&
-                            !activeConversation.deal.investorFeePaid && (
-                            <Button
-                              onClick={() => openPaymentModal("investorFeePaid")}
-                              className="bg-blue-500 text-white hover:bg-blue-600"
-                            >
-                              دفع رسوم المستثمر (
-                              {formatDZD(
-                              calculateFees(activeConversation.deal.amountDZD).investorFee
+                            {user?.role === "sponsor" &&
+                              activeConversation.deal &&
+                              !activeConversation.deal.investorFeePaid && (
+                                <Button
+                                  onClick={() =>
+                                    handlePayFee(activeConversation.id, "investorFeePaid")
+                                  }
+                                  className="bg-blue-500 text-white hover:bg-blue-600"
+                                >
+                                  دفع رسوم المستثمر (
+                                  {formatDZD(
+                                    calculateFees(activeConversation.deal.amountDZD).investorFee
+                                  )}
+                                  )
+                                </Button>
                               )}
-                              )
-                            </Button>
-                            )}
-                          {user?.role === "startup" &&
-                            activeConversation.deal &&
-                            !activeConversation.deal.startupFeePaid && (
-                            <Button
-                              onClick={() => openPaymentModal("startupFeePaid")}
-                              className="bg-blue-500 text-white hover:bg-blue-600"
-                            >
-                              دفع رسوم صاحب المشروع (
-                              {formatDZD(
-                              calculateFees(activeConversation.deal.amountDZD).startupFee
+                            {user?.role === "startup" &&
+                              activeConversation.deal &&
+                              !activeConversation.deal.startupFeePaid && (
+                                <Button
+                                  onClick={() =>
+                                    handlePayFee(activeConversation.id, "startupFeePaid")
+                                  }
+                                  className="bg-blue-500 text-white hover:bg-blue-600"
+                                >
+                                  دفع رسوم صاحب المشروع (
+                                  {formatDZD(
+                                    calculateFees(activeConversation.deal.amountDZD).startupFee
+                                  )}
+                                  )
+                                </Button>
                               )}
-                              )
-                            </Button>
-                            )}
-                          {user?.role === "startup" &&
-                            activeConversation.deal &&
-                            !activeConversation.deal.leasingFeePaid && (
-                            <Button
-                              onClick={() => openPaymentModal("leasingFeePaid")}
-                              className="bg-green-500 text-white hover:bg-green-600"
-                            >
-                              دفع رسوم التمويل التأجيري (
-                              {formatDZD(
-                              calculateFees(activeConversation.deal.amountDZD).leasingFee
+                            {user?.role === "startup" &&
+                              activeConversation.deal &&
+                              !activeConversation.deal.leasingFeePaid && (
+                                <Button
+                                  onClick={() =>
+                                    handlePayFee(activeConversation.id, "leasingFeePaid")
+                                  }
+                                  className="bg-green-500 text-white hover:bg-green-600"
+                                >
+                                  دفع رسوم التمويل التأجيري (
+                                  {formatDZD(
+                                    calculateFees(activeConversation.deal?.amountDZD ?? 0).leasingFee
+                                  )}
+                                  )
+                                </Button>
                               )}
-                              )
-                            </Button>
-                            )}
                           </div>
                           {(activeConversation.deal?.investorFeePaid ||
-                          activeConversation.deal?.startupFeePaid ||
-                          activeConversation.deal?.leasingFeePaid) && (
-                          <p className="text-sm text-green-400">
-                            {activeConversation.deal?.investorFeePaid && "تم دفع رسوم المستثمر | "}
-                            {activeConversation.deal?.startupFeePaid &&
-                            "تم دفع رسوم صاحب المشروع | "}
-                            {activeConversation.deal?.leasingFeePaid &&
-                            "تم دفع رسوم التمويل التأجيري"}
-                          </p>
+                            activeConversation.deal?.startupFeePaid ||
+                            activeConversation.deal?.leasingFeePaid) && (
+                            <p className="text-sm text-green-400">
+                              {activeConversation.deal?.investorFeePaid && "تم دفع رسوم المستثمر | "}
+                              {activeConversation.deal?.startupFeePaid &&
+                                "تم دفع رسوم صاحب المشروع | "}
+                              {activeConversation.deal?.leasingFeePaid &&
+                                "تم دفع رسوم التمويل التأجيري"}
+                            </p>
                           )}
                         </div>
-                        </div>
-                        {showPaymentModal && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
-                          <h3 className="text-xl font-semibold mb-4">اختر طريقة الدفع</h3>
-                          <div className="space-y-4">
-                            <button
-                            onClick={() => {
-                              handlePayFee(activeConversation.id, selectedFeeType!);
-                              closePaymentModal();
-                            }}
-                            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-                            >
-                            EDAHABIA
-                            </button>
-                            <button
-                            onClick={() => {
-                              handlePayFee(activeConversation.id, selectedFeeType!);
-                              closePaymentModal();
-                            }}
-                            className="w-full bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600"
-                            >
-                            PayPal
-                            </button>
-                            <button
-                            onClick={closePaymentModal}
-                            className="w-full border border-gray-300 text-gray-700 py-2 rounded hover:bg-gray-100"
-                            >
-                            إلغاء
-                            </button>
-                          </div>
-                          </div>
-                        </div>
-                        )}
+                      </div>
                       <div className="flex-1 p-4 overflow-y-auto bg-gray-900">
                         <div className="space-y-2">
                           {filteredMessages.map((msg) => (

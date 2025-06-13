@@ -9,7 +9,6 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
-import { useAuth } from "@/lib/authContext"
 
 interface ProjectCardProps {
   project: Project
@@ -17,11 +16,9 @@ interface ProjectCardProps {
 }
 
 export function ProjectCard({ project, featured = false }: ProjectCardProps) {
-  const { user } = useAuth()
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showSnackBar, setShowSnackBar] = useState(false)
-
-  const isInvestor = user?.role === "sponsor"
-  const isLoggedIn = !!user
+  const [isInvestor, setIsInvestor] = useState(false) // now controlled by state
 
   const progress = calculateProgress(
     project.raised.equipment ? project.raised.equipment.quantity : 0,
@@ -210,32 +207,20 @@ export function ProjectCard({ project, featured = false }: ProjectCardProps) {
         )}
 
         {showSnackBar && (
-          <motion.div
-            className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-4 rounded-lg shadow-xl z-50 max-w-sm w-full"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ duration: 0.3 }}
-          >
-            <p className="text-sm font-medium text-center">
-              يرجى تسجيل الدخول كمستثمر لعرض تفاصيل المشروع
-            </p>
-            <div className="mt-4 flex justify-center gap-4">
-              <Link
-                href="/login"
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium underline"
-                onClick={() => setShowSnackBar(false)}
-              >
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-4 py-2 rounded-md shadow-lg z-50">
+            <p>يرجى تسجيل الدخول كمستثمر لعرض تفاصيل المشروع.</p>
+            <div className="mt-2 flex justify-end gap-4">
+              <Link href="/login" className="underline">
                 تسجيل الدخول
               </Link>
-              <button
+              <button 
                 onClick={() => setShowSnackBar(false)}
-                className="text-red-400 hover:text-red-300 text-sm font-medium"
+                className="text-red-300"
               >
                 إغلاق
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
     </motion.div>

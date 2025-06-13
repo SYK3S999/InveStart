@@ -704,16 +704,17 @@ export default function ProjectDetailsPage() {
                       {project.offers && project.offers.length > 0 ? (
                         <ul className="space-y-3">
                           {project.offers.map((offer) => (
-                            <li
-                              key={offer.id}
-                              className="p-3 bg-primary-50 rounded-lg border border-primary-200"
-                            >
+                            <li key={offer.id} className="p-3 bg-primary-50 rounded-lg border border-primary-200">
                               <div className="flex justify-between items-center mb-2">
                                 <span className="text-gray-600 text-sm">
                                   {offer.equipment.quantity} وحدة {offer.equipment.type} ({offer.equipment.condition})
                                 </span>
                                 <span className={`px-2 py-1 rounded-full text-xs ${getOfferStatusClass(offer.status)}`}>
-                                  {offer.status === "accepted" ? "مقبول" : offer.status === "rejected" ? "مرفوض" : "قيد الانتظار"}
+                                  {offer.status === "accepted"
+                                    ? "مقبول"
+                                    : offer.status === "rejected"
+                                    ? "مرفوض"
+                                    : "قيد الانتظار"}
                                 </span>
                               </div>
                               <p className="text-gray-600 text-xs mb-2">التاريخ: {formatDate(offer.date)}</p>
@@ -751,16 +752,17 @@ export default function ProjectDetailsPage() {
                         <p className="text-gray-600 text-center">لا توجد عروض بعد</p>
                       )}
                     </div>
-                    {/* Edit Project Button - Only for Startup */}
-                    <Button
-                      asChild
-                      className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
-                    >
-                      <Link href={`/projects/${project.id}/edit`}>
-                        <Edit className="h-4 w-4" />
-                        تعديل المشروع
-                      </Link>
-                    </Button>
+                    {/* {role === "startup" && (
+                      <Button
+                        asChild
+                        className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"
+                      >
+                        <Link href={`/projects/${project.id}/edit`}>
+                          <Edit className="h-4 w-4" />
+                          تعديل المشروع
+                        </Link>
+                      </Button>
+                    )} */}
                   </>
                 )}
 

@@ -53,7 +53,7 @@ interface ExtendedProject extends Project {
   }[];
 }
 
-// Simulated RBAC logic (replace with real auth in production)
+// Simulated RBAC logic
 const useAuth = () => {
   const user = { role: "startup", id: "user123" }; // Toggle role: "sponsor" or "startup"
   return { isAuthenticated: !!user, role: user?.role || null, userId: user?.id || null };
@@ -122,10 +122,6 @@ export default function ProjectDetailsPage() {
   };
 
   const handleSubmitOffer = () => {
-    if (role !== "sponsor") {
-      setError("فقط المستثمرون يمكنهم تقديم عروض المعدات");
-      return;
-    }
     if (!project || !equipmentOffer.type.trim() || !equipmentOffer.quantity || !equipmentOffer.condition.trim()) {
       setError("يرجى ملء جميع حقول العرض (نوع المعدات، الكمية، الحالة)");
       return;
@@ -160,10 +156,6 @@ export default function ProjectDetailsPage() {
   };
 
   const handleConfirmDelivery = () => {
-    if (role !== "sponsor") {
-      setError("فقط المستثمرون يمكنهم تأكيد التسليم");
-      return;
-    }
     if (!project) return;
     // Simulate Blockchain transaction for delivery
     const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
@@ -174,10 +166,6 @@ export default function ProjectDetailsPage() {
   };
 
   const handleAcceptOffer = (offerId: string) => {
-    if (role !== "startup") {
-      setError("فقط أصحاب المشاريع يمكنهم قبول العروض");
-      return;
-    }
     if (!project) return;
     const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
     setProject({
@@ -191,14 +179,9 @@ export default function ProjectDetailsPage() {
     });
     console.log("Offer accepted:", offerId, "Blockchain Tx Hash:", mockTxHash);
     alert("تم قبول العرض! تم تسجيل العملية على البلوكشين.");
-    setError(null);
   };
 
   const handleRejectOffer = (offerId: string) => {
-    if (role !== "startup") {
-      setError("فقط أصحاب المشاريع يمكنهم رفض العروض");
-      return;
-    }
     if (!project) return;
     const mockTxHash = `0x${Math.random().toString(16).slice(2, 66)}`;
     setProject({
@@ -209,7 +192,6 @@ export default function ProjectDetailsPage() {
     });
     console.log("Offer rejected:", offerId, "Blockchain Tx Hash:", mockTxHash);
     alert("تم رفض العرض! تم تسجيل العملية على البلوكشين.");
-    setError(null);
   };
 
   const nextImage = () => {
@@ -663,37 +645,6 @@ export default function ProjectDetailsPage() {
                         </Button>
                       </div>
                     )}
-                    {/* Display sponsor's own offers */}
-                    {project.offers && project.offers.length > 0 && (
-                      <div className="bg-white p-5 rounded-lg border border-primary-200 shadow-md mb-6">
-                        <h3 className="text-lg font-bold text-primary-600 mb-4 text-center">عروضك</h3>
-                        <ul className="space-y-3">
-                          {project.offers
-                            .filter((offer) => offer.sponsorId === userId)
-                            .map((offer) => (
-                              <li
-                                key={offer.id}
-                                className="p-3 bg-primary-50 rounded-lg border border-primary-200"
-                              >
-                                <div className="flex justify-between items-center mb-2">
-                                  <span className="text-gray-600 text-sm">
-                                    {offer.equipment.quantity} وحدة {offer.equipment.type} ({offer.equipment.condition})
-                                  </span>
-                                  <span className={`px-2 py-1 rounded-full text-xs ${getOfferStatusClass(offer.status)}`}>
-                                    {offer.status === "accepted" ? "مقبول" : offer.status === "rejected" ? "مرفوض" : "قيد الانتظار"}
-                                  </span>
-                                </div>
-                                <p className="text-gray-600 text-xs mb-2">التاريخ: {formatDate(offer.date)}</p>
-                                {offer.transactionHash && (
-                                  <p className="text-gray-600 text-xs mb-2 break-all">
-                                    رمز العملية: <span className="font-mono text-primary-500">{offer.transactionHash}</span>
-                                  </p>
-                                )}
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    )}
                   </>
                 )}
 
@@ -751,7 +702,6 @@ export default function ProjectDetailsPage() {
                         <p className="text-gray-600 text-center">لا توجد عروض بعد</p>
                       )}
                     </div>
-                    {/* Edit Project Button - Only for Startup */}
                     <Button
                       asChild
                       className="w-full bg-primary-500 text-white rounded-full px-6 py-3 hover:bg-primary-600 shadow-md transition-all duration-300 flex items-center gap-2"

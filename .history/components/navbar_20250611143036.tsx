@@ -94,7 +94,7 @@ export function Navbar() {
     ],
     sponsor: [
       { href: '/dashboard/sponsor', label: 'لوحة التحكم', icon: <LayoutDashboard className='h-4 w-4 ml-2' /> },
-      // { href: '/projects', label: 'استكشاف المشاريع', icon: <Briefcase className='h-4 w-4 ml-2' /> },
+      { href: '/projects', label: 'استكشاف المشاريع', icon: <Briefcase className='h-4 w-4 ml-2' /> },
       { href: '/investments', label: 'عروضي', icon: <Briefcase className='h-4 w-4 ml-2' /> },
       { href: '/contracts', label: 'العقود', icon: <FileText className='h-4 w-4 ml-2' /> },
     ],
@@ -165,7 +165,7 @@ export function Navbar() {
               <span className='text-2xl lg:text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent'>
                 INVESTART
               </span>
-              <span className='text-xs text-primary-500 font-medium -mt-1'>منصة التمويل التأجيري</span>
+              <span className='text-xs text-primary-500 font-medium -mt-1'>منصة التمويل العيني</span>
             </div>
           </Link>
 
